@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Array_iterate</title>
+</head>
+<body>
+
+    <h3>数组的迭代</h3>
+    
+    <p>最近这几天的开发中，对数组进行了大量的操作，然而，操作数组最绕不开的就是数组的遍历和迭代，在这个过程中，我发现不一样的操作方法带来的效果是很不一样的，比如for循环最常用，但是但是也要注意使用习惯，不然使用不当也引发性能问题，比如for-in循环，有时候我们在遍历输出数组的每一项时，有些浏览器会暗地里进行一些排序操作，导致数组的原始顺序被打乱，它本是应该用于操作非数组对象的方法。ES5里边给我们提供了五中迭代方法会让代码瞬间优雅很多，下面做了个小结，以便可以在后期的开发过程中更加放心大胆熟练的使用。</p>
+
+    <script>
+        
+        /*
+        * 数组的迭代：
+        *       每个方法接收两个参数 ：要在每一项上运行的函数、运行该函数的作用域对象；
+        *       每一项上运行的函数接收三个参数 ：数组项的值、该项在数组中的位置、数组对象本身；
+        *
+        * every() :  every one is true, return true or false;
+        * some() : some one is true, return true or false;
+        * filter() : which one is true, return a new array contains the true one;
+        * forEach() : operate every one, return null;
+        * map() : operate every one, return a new array contains every operated one;
+        *
+        * tips:
+        *       1、filter方法对查询符合某些条件的所有数组项很有用；
+        *       2、forEach方法对数组的每一项执行操作，本质上与for循环迭代数组一样；
+        *      *3、如果想要迭代中使用continue、break语句提前结束循环，则只能使用for循环或抛出一个异常（不建议使用）；
+        *
+        * summary:
+        *       1、各个迭代方法可以结合使用；
+        *       2、每个方法的callback在取值的规则上是一致的；
+        *       3、这五种方法，只有filter、map会产生新数组；
+        * */
+        
+        
+        var books = [
+            {
+                name : "红楼梦",
+                author : "曹雪芹",
+                pages : 890
+            },
+            {
+                name : "聊斋志异",
+                author : "蒲松龄",
+                pages : 680
+            },
+            {
+                name : "多情剑客无情剑",
+                author : "古龙",
+                pages : 980
+            },
+            {
+                name : "狂人日记",
+                author : "鲁迅",
+                pages : 480
+            },
+            {
+                name : "围城",
+                author : "钱钟书",
+                pages : 680
+            },
+            {
+                name : "巨人的陨落",
+                author : "肯.福莱特",
+                pages : ""
+            }
+        ];
+        
+        
+        /*
+        * arr.every(callback[, thisAarg])
+        *
+        * 1、thisArg为调用callback时的this值，若不传，严格模式下this为undefined，非严格模式下this为全局window对象；
+        * 2、若发现有一项是的callback的返回值为false，则every方法会立即返回false；
+        * 3、every变量的数组在遍历之前就以及确定，若在操作every中添加的元素，则不会被访问到；
+        * 4、若在every中删除元素，或从未被赋值的元素，则不会被放完到；
+        * 5、若元素被更改，则传入callback的值就是访问到该元素那一刻的值；
+        *
+        * */
+        
+        //常用方式：判断是否每一本书都超过了800页
+        var isAllThicker = books.every(function (book) {
+            return (book.pages > 800);
+        });
+        console.log(isAllThicker);
+        
+        
+        /*
+        * arr.some(callback[, thisArg])
+        *
+        * 1、callback只会在那些有值的元素上操作；
+        * 2、若有一个元素能使得callback返回true，则some方法会立即返回true；
+        * 3、thisArg的规则同every；
+        * 4、动态改变数组的取值规则同every；
+        * */
+        
+        //常用方式：判断是否存在页数大于900的书；
+        var isMostThicker = books.some(function (book) {
+           return (book.pages > 900);
+        });
+        console.log(isMostThicker);
+        
+        
+        /*
+        * filter(callback[,thisArg])
+        *
+        * 1、将返回所有使得callback返回true或返回等价于true的元素项组成的新数组；
+        * 2、遍历的范围在第一次调用callback时就已确定，在filter操作之后添加进来的元素不会被访问到；
+        * 3、若以及改变，访问到的值是callback调用那一刻元素项的值；
+        * 4、被删除或从未被赋值的元素不会被访问到；
+        * */
+        
+        //常用方式：筛选除页数小于500的书籍；
+        var small_book = books.filter(function (item) {
+            return (item.pages < 500);
+        });
+        console.log(small_book);
+        
+        
+        /*
+        *  forEach(callback[,thisArg])
+        *
+        * 如果数组在迭代时被修改了的情况（见eg.forEach-2）：
+        *   1、forEach遍历的范围在一地刺调用callback前就决定，调用callback之后添加的元素不会被callback访问到；
+        *   2、如果已存在的值被改变，则传递给callback的值就是forEach遍历到他们的那一刻的值；
+        *   3、已删除的元素不会被访问到，若已访问过的元素被删除，则被删除元素的下一个元素就会被跳过,若未访问的元素被删除，则依然能访问              到被删除的元素，并且被删除元素的下一个元素不能被访问到；
+        *   综上，我们尽量避免在迭代时对数组进行增删改；
+        *
+        * */
+        
+        //常用方式：筛选出pages大于880的书, 统计出书籍的名字；
+        var book_names = [], book_authors = [], thickers = [];
+        books.forEach(function (book) {
+            if (book.pages > 880) {
+                thickers.push(book);
+            }
+            book_names.push(book.name);
+        });
+        
+        //eg.forEach-2
+        var letter = ["a", "b", "c", "d"];
+        letter.forEach(function (item, i) {
+//            if (i == 1) {
+//                ‘c’不会被访问到
+//                letter.splice(i, 1);
+//            }
+//            if (i == 1) {
+//                ‘d’不会被访问到
+//                letter.length = 3;
+//            }
+            if (i == 1) {
+//                ‘e’不会被访问到
+                letter.push("e");
+            }
+            console.log(item);
+        });
+        
+        
+        /*
+        * map(callback[,thisArg])
+        *
+        * 1、被删除的值或者没有赋值的元素不会被callback操作；
+        * 2、map不修改原数组；
+        * 3、数组在迭代时被修改的取值情况同forEach；
+        * */
+        
+        //常用方式：为每本书加上书名号；
+        var newBooks = books.map(function (book) {
+            return book.name = "《" + book.name + "》";
+        });
+        console.log(newBooks);//该新数组 是所有书名
+        
+        //有趣案例1：反转字符串
+        var str = "abcde";
+        var new_str = Array.prototype.map.call(str, function (item) {
+            return item;
+        }).reverse().join("");
+        console.log(new_str);
+        
+        //有趣案例2：默认参数
+        //会返回NaN是因为parseInt函数，第二个参数分别被传入了0、1、2
+        //也即分别调用了这三个方法：
+        //parseInt(1,0)   parseInt(2,1)  parseInt(3,2)
+        var num = ["1", "2", "3"];
+        var output = num.map(parseInt);
+        console.log(output);
+        
+    </script>
+</body>
+</html>
