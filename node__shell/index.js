@@ -176,7 +176,7 @@ var fn = {
                 if (/\s+/.test(data[i].dev_branch) || /\r/g.test(data[i].dev_branch)) {
                     if (/\s+/g.test(data[i].dev_branch)) {
                         //匹配空格
-                        per = data[i].dev_branch.replace(/http:\/\/10.200.3.7\/svn\/others\/branches\/\w+/g, "").replace(/\s+/g, ",").split(",");
+                        per = data[i].dev_branch.replace(/http:\/\/aaaaaaa\/svn\/others\/branches\/\w+/g, "").replace(/\s+/g, ",").split(",");
                         for (var ik = 0, lenk = per.length; ik < lenk; ik++) {
                             per[ik] = per[ik].replace(/[\u4e00-\u9fa5|\s]/g, "").replace(/\/$/, "");
                         }
@@ -185,7 +185,7 @@ var fn = {
 
                     if (/\r/g.test(data[i].dev_branch)) {
                         //匹配换行
-                        per = data[i].dev_branch.replace(/http:\/\/10.200.3.7\/svn\/others\/branches\/\w+/g, "").replace(/[\r\n]/g, ",").split(",");
+                        per = data[i].dev_branch.replace(/http:\/\/aaaaaaa\/svn\/others\/branches\/\w+/g, "").replace(/[\r\n]/g, ",").split(",");
                         //匹配掉汉字
                         for (var ik = 0, lenk = per.length; ik < lenk; ik++) {
                             per[ik] = per[ik].replace(/[\u4e00-\u9fa5|\s]/g, "").replace(/\/$/, "");
@@ -196,7 +196,7 @@ var fn = {
                     continue;
                 }
                 data[i].dev_branch.replace(/\/$/, "").replace(/[\u4e00-\u9fa5|\s]/g, "");
-                params.h5_data.push(data[i].dev_branch.replace(/http:\/\/10.200.3.7\/svn\/others\/branches\/\w+/g, "").replace(/[\u4e00-\u9fa5|\s]/g, ""));
+                params.h5_data.push(data[i].dev_branch.replace(/http:\/\/aaaaaaa\/svn\/others\/branches\/\w+/g, "").replace(/[\u4e00-\u9fa5|\s]/g, ""));
             }
         }
         fn.output_data(params.h5_data, EXCEL_URL + "\\result\\chandao_data.txt");
