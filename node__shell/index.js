@@ -1,11 +1,11 @@
 ﻿#!/usr/bin/env node
 
 /*
-    输入格式 ： compare (trunk分支绝对路径)  (trunk-version-start)  (trunk-version-end)
-*/
+ 输入格式 ： compare (trunk分支绝对路径)  (trunk-version-start)  (trunk-version-end)
+ */
 
 
-//trunk路径  变为常量，show log无需再根据相对路径进行查找
+//trunk路径
 var TRUNK_URL = "http://**********/svn/others/trunk";
 //excel表格路径
 var EXCEL_URL = "F:\\node_compare";
@@ -76,7 +76,7 @@ var fn = {
             desc = data.slice(0,1);
             data_seg = data.slice(1).sort();
             data = desc.concat(data_seg);
-        } 
+        }
 
         // 去重
         var data_unique = [];
@@ -99,32 +99,32 @@ var fn = {
                             console.log(err1);
                         }
                         console.log("---" + url + '文件输出成功\n');
-                    }); 
-                 })
-        
+                    });
+                })
+
             } else if (err.code === "ENOENT") {
                 //文件夹不存在
                 fs.mkdir(EXCEL_URL + '\\result', 0777, function (err) {
-                  if (err) throw err;
+                    if (err) throw err;
 
-                  fs.open(url, "w", 0666, function(err) {
-                    if (err) {
-                        console.log(url);
-                    }
-                    fs.writeFile(url, data_unique, "utf8", function (err1) {
-                        if (err1) {
-                            console.log(err1);
+                    fs.open(url, "w", 0666, function(err) {
+                        if (err) {
+                            console.log(url);
                         }
-                        console.log("---" + url + '文件输出成功\n');
-                    }); 
-                 })
+                        fs.writeFile(url, data_unique, "utf8", function (err1) {
+                            if (err1) {
+                                console.log(err1);
+                            }
+                            console.log("---" + url + '文件输出成功\n');
+                        });
+                    })
                 });
             }
         })
 
     },
 
-    geth5Data : function(callback) {
+    geth5Data : function(resolve, reject) {
 
         if (!EXCEL_URL || !EXCEL_NAME) {
             return;
@@ -160,7 +160,7 @@ var fn = {
                     headers[col] = worksheet[z].v == "涉及工程" ? "relate_pro" : "dev_branch";
                 }
                 continue;
-                
+
             }
 
             if(!data[row]) data[row]={};
@@ -173,20 +173,19 @@ var fn = {
         for (var i = 0, len = data.length; i < len; i++) {
             if (data[i] && data[i].relate_pro.indexOf("h5") != -1) {
 
-
                 if (/\s+/.test(data[i].dev_branch) || /\r/g.test(data[i].dev_branch)) {
                     if (/\s+/g.test(data[i].dev_branch)) {
                         //匹配空格
-                        per = data[i].dev_branch.replace(/http:\/\/10.200.3.7\/svn\/others\/branches\/\w+/g, "").replace(/\s+/g, ",").split(",");
+                        per = data[i].dev_branch.replace(/http:\/\/aaaaaaa\/svn\/others\/branches\/\w+/g, "").replace(/\s+/g, ",").split(",");
                         for (var ik = 0, lenk = per.length; ik < lenk; ik++) {
                             per[ik] = per[ik].replace(/[\u4e00-\u9fa5|\s]/g, "").replace(/\/$/, "");
                         }
                         params.h5_data = params.h5_data.concat(per);
                     }
-                
+
                     if (/\r/g.test(data[i].dev_branch)) {
                         //匹配换行
-                        per = data[i].dev_branch.replace(/http:\/\/10.200.3.7\/svn\/others\/branches\/\w+/g, "").replace(/[\r\n]/g, ",").split(",");
+                        per = data[i].dev_branch.replace(/http:\/\/aaaaaaa\/svn\/others\/branches\/\w+/g, "").replace(/[\r\n]/g, ",").split(",");
                         //匹配掉汉字
                         for (var ik = 0, lenk = per.length; ik < lenk; ik++) {
                             per[ik] = per[ik].replace(/[\u4e00-\u9fa5|\s]/g, "").replace(/\/$/, "");
@@ -196,62 +195,24 @@ var fn = {
 
                     continue;
                 }
-
                 data[i].dev_branch.replace(/\/$/, "").replace(/[\u4e00-\u9fa5|\s]/g, "");
-                params.h5_data.push(data[i].dev_branch.replace(/http:\/\/10.200.3.7\/svn\/others\/branches\/\w+/g, "").replace(/[\u4e00-\u9fa5|\s]/g, ""));
-
-                
+                params.h5_data.push(data[i].dev_branch.replace(/http:\/\/aaaaaaa\/svn\/others\/branches\/\w+/g, "").replace(/[\u4e00-\u9fa5|\s]/g, ""));
             }
         }
-
         fn.output_data(params.h5_data, EXCEL_URL + "\\result\\chandao_data.txt");
-        params.getH5_tag = true;
-        return callback();
+        resolve(params.h5_data)
     },
 
-        
-    getLogData : function(callback) {
+
+    getLogData : function(resolve, reject) {
         //调出svn log信息并打印出来
         var testdata;
         var reg = /\/trunk((?:(?:\/?)(?:[a-zA-Z0-9_.-]+)(?:\/?))*)/g;
         var disc = TRUNK_URL.slice(0,2);
         var path = TRUNK_URL.slice(2);
         var last_version;
-
-        if (process.argv.length === 3) {
-            exec("svn log " + TRUNK_URL + " -l 1 -q", function(error, stdout, stderr) {
-                if (error) {
-                    console.log(error.stack);
-                    console.log("Error code : " + error.code);
-                    process.exit();
-                }
-                last_version = /r(\d+)/.exec(stdout)[1];
-
-                exec("svn log " + TRUNK_URL + " -v -r " + process.argv[2] + ":" + last_version, {
-                    encoding: 'utf8',
-                    maxBuffer: 50000 * 1024
-                }, function(error, stdout, stderr) {
-                    if (error) {
-                        console.log(error.stack);
-                        console.log("Error code : " + error.code);
-                        process.exit();
-                    }
-                    testdata = stdout.toString().match(reg);
-                    params.log_data[0] = "trunk指定版本" + process.argv[2] + "-" + last_version + "间出现的所有路径 : \n"
-                    for (var i = 0, len = testdata.length; i < len; i++) {
-                        if (testdata[i] && testdata[i].indexOf("\/") != -1) {
-                            params.log_data.push(testdata[i].replace("/trunk", ""));
-                        }
-                    }
-                    fn.output_data(params.log_data, EXCEL_URL + "\\result\\trunk_data.txt");
-                    params.getLog_tag = true;
-                    return callback();
-                })
-            })
-        } 
-
-        if (process.argv.length === 4) {
-            exec("svn log " + TRUNK_URL + " -v -r " + process.argv[2] + ":" + process.argv[3], {
+        var shoLog = function(last_version) {
+            exec("svn log " + TRUNK_URL + " -v -r " + process.argv[2] + ":" + last_version, {
                 encoding: 'utf8',
                 maxBuffer: 50000 * 1024
             }, function(error, stdout, stderr) {
@@ -261,33 +222,48 @@ var fn = {
                     process.exit();
                 }
                 testdata = stdout.toString().match(reg);
-                params.log_data[0] = "------trunk指定版本" + process.argv[2] + "-" + process.argv[3] + "间出现的所有路径--------\n"
+                params.log_data[0] = "trunk指定版本" + process.argv[2] + "-" + last_version + "间出现的所有路径 : \n"
                 for (var i = 0, len = testdata.length; i < len; i++) {
                     if (testdata[i] && testdata[i].indexOf("\/") != -1) {
                         params.log_data.push(testdata[i].replace("/trunk", ""));
                     }
                 }
                 fn.output_data(params.log_data, EXCEL_URL + "\\result\\trunk_data.txt");
-                params.getLog_tag = true;
-                return callback();
+                resolve(params.log_data)
             })
+        }
+
+        if (process.argv.length === 3) {
+            exec("svn log " + TRUNK_URL + " -l 1 -q", function(error, stdout, stderr) {
+                if (error) {
+                    console.log(error.stack);
+                    console.log("Error code : " + error.code);
+                    process.exit();
+                }
+                last_version = /r(\d+)/.exec(stdout)[1];
+                shoLog(last_version);
+
+            })
+        }
+
+        if (process.argv.length === 4) {
+            shoLog(process.argv[3]);
         }
     },
 
-    compare : function(h5_data, log_data) {
-
+    compare : function(result) {
+        var h5_data = result[0], log_data = result[1];
         var res_h5 = [], res_log = [], i, j, len1, len2;
         var tem_log1 = [], tem_log2 = [];
         var reg = /(\/[\w.-]+)+/;
-        
+
         if (h5_data.length < 0 || log_data.length < 0) {
             return;
-        } 
+        }
 
         //删除数组里的第一句描述
         h5_data.shift();
         log_data.shift();
-
 
         //筛选禅道列表有，show log里边没有的路径
         res_h5 = h5_data.map(function(item, i) {
@@ -298,11 +274,10 @@ var fn = {
         res_h5.unshift('------------禅道列表有，trunk记录没有的路径------------------------\n');
 
         //筛选禅道列表没有，show log里边有的路径
-        // res_log = log_data.map(function(item, i){
         var item, elem, tag = false;
         for (var x = 0, l = log_data.length; x < l; x++) {
             item = log_data[x];
-            
+
             for (var i = 0, len = h5_data.length; i < len; i++) {
                 elem = h5_data[i];
 
@@ -319,7 +294,6 @@ var fn = {
                         break;
                     }
                 }
-
                 tag = true;
             }
 
@@ -346,17 +320,19 @@ var fn = {
 
     },
 
-    doCompare : function() {
+    doCompare : function(result) {
+        // console.log(result)
         //获取到 h5data 和 logdata 之后再执行callback
-        if (params.getH5_tag && params.getLog_tag) {
-            fn.compare(params.h5_data, params.log_data);    
-        }
+        // if (params.getH5_tag && params.getLog_tag) {
+        fn.compare(result[0], result[1]);
+        // }
     },
 
     init : function() {
         this.param_verify();
-        this.geth5Data(fn.doCompare);
-        this.getLogData(fn.doCompare);
+        var pro1 = new Promise(this.geth5Data);
+        var pro2 = new Promise(this.getLogData);
+        Promise.all([pro1, pro2]).then(this.compare);
     }
 }
 
