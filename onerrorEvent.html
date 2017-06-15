@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>onerror</title>
+</head>
+<body>
+    
+    <h3>onerror event</h3>
+    <p>
+        今天我所负责项目的一个页面在某个机型上出现了个兼容问题，代码已经是趋于稳定的节奏忽然又出现这个问题，并且还是特定机型能复现，难免感觉有点奇葩，但问题是app内嵌页面在手机上的调试，因为m站均无问题，就导致一些后台报错无法直观的在手机上看到，这样情况下的调试难免有点盲人摸象的感觉。
+        要捕获页面的错误，首先想到的肯定是try-catch，虽然问题还没有得到解决，但是感觉这个技能还是有必要掌握一下的。
+    </p>
+
+    <script>
+        
+        /*
+        *   全局一旦有js脚本报错，便会触发onerror事件
+        *
+        *   1、若处理函数返回true，则浏览器不会弹出错误信息框，否则，浏览器会会弹出错误信息；
+        *   2、只有运行错误才会出发onerror，语法错误不会触发（具体JS错误类型，会下一次具体描述）；
+        *       具体是以下几种：
+        *           运行时错误（runtime error），例如无效的对象引用或安全限制或主动抛出的错误
+                    下载错误（fail error），如图片
+                    在IE9中，获取多媒体数据失败也会引发
+                    或者代码存在语法错误，导致编译不通过时也会引发
+            3、当执行的js脚本存在跨域情况时，给返回头部添加Access-Control-Allow-Origin: *属性，给js标签添加crossorigin 属性
+            
+        *   参考链接：https://blog.sentry.io/2016/01/04/client-javascript-reporting-window-onerror.html
+        *            https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onerror
+        * */
+        
+        window.onerror = function (msg, url, lineNo, columnNo, error) {
+            var string = msg.toLowerCase();
+            var substring = "script error";
+            if (string.indexOf(substring) > -1){
+                alert('Script Error: See Browser Console for Detail');
+            } else {
+                var message = [
+                    'Message: ' + msg,
+                    'URL: ' + url,
+                    'Line: ' + lineNo,
+                    'Column: ' + columnNo,
+                    'Error object: ' + JSON.stringify(error)
+                ].join(' - ');
+
+                alert(message);
+            }
+
+            var suppressErrorAlert = false;
+//            suppressErrorAlert = true;
+
+            return suppressErrorAlert;
+        };
+        
+        var pElem = document.getElementsByTagName("p")[0];
+        var showInfo = function () {
+            call_undefined_fun();
+        };
+        pElem.addEventListener("click", showInfo);
+        
+        
+        
+        
+        
+    </script>
+</body>
+</html>
