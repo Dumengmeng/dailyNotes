@@ -60,9 +60,53 @@
         pElem.addEventListener("click", showInfo);
         
         
+        /*
+        * JS错误处理机制知识点总结：
+        *
+        *   1、Error对象
+        *    JS解析或执行时，一旦发生错误，就会抛出错误对象，所有的对象都是Error的实例，每个实例都具有三个属性：
+        *       message：错误信息，也即传给Error("info")对象的参数"info"；
+        *       name：错误名字，默认为"Error"，它是一个可写的属性；
+        *       stack： 错误的堆栈，由最底层到最外层地存放错误的堆栈信息，据此我们可以知道错误是如何一级一级传递的以及错误的源头；
+        *   2、JS的错误类型
+        *   除了Error这种错误类型，JS还派生除了其他六种错误类型（最常见的为前三种）：
+        *       SyntacError：解析代码时发生的语法错误；
+        *       ReferanceError：引用一个不存在的变量时发生的错误；
+        *       TypeError： 变量或参数不是预期类型；
+        *       RangeError：变量值超出了有效范围；
+         *      URIError：URI相关的函数参数不正确时抛出的错误；
+        *       EvalError：eval函数没有被正确执行；
+        *   3、throw语句 中断语句的执行，我们可以用其来抛出一个异常，参数可以为各种类型的值，可以是一个Error对象，或自定义的错误对象；
+        *   4、try-catch、try-catch-finally语句，用法与其他面向对象的语言比较类似；
+        * */
         
+        
+        function assertion(expression, msg) {
+            if (!expression) {
+                throw {name : "Assertion Exception", message : msg}
+            }
+        }
+        
+        assertion(typeof param === "i am param", "param is not defined~");
+        
+        //上述方法等同于：
+        console.assert(typeof param === "i am param", "param is not defined~");
         
         
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
