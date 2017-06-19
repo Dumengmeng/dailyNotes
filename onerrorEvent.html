@@ -3,10 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>onerror</title>
+    <meta name="viewport" content="width=device-width">
 </head>
 <body>
     
-    <h3>onerror event</h3>
+    <div>
+        <h3>onerror event</h3>
+    </div>
+    <button id="btn1">remove</button>
+    <button id="btn2">modify</button>
+    <button id="btn3">change attribute</button>
     <p>
         今天我所负责项目的一个页面在某个机型上出现了个兼容问题，代码已经是趋于稳定的节奏忽然又出现这个问题，并且还是特定机型能复现，难免感觉有点奇葩，但问题是app内嵌页面在手机上的调试，因为m站均无问题，就导致一些后台报错无法直观的在手机上看到，这样情况下的调试难免有点盲人摸象的感觉。
         要捕获页面的错误，首先想到的肯定是try-catch，虽然问题还没有得到解决，但是感觉这个技能还是有必要掌握一下的，同时也发现要系统的学习下JS的报错机制以及报错类型和常见错误对应的处理方式的必要性。
@@ -57,7 +63,7 @@
         var showInfo = function () {
             call_undefined_fun();
         };
-        pElem.addEventListener("click", showInfo);
+//        pElem.addEventListener("click", showInfo);
         
         
         /*
@@ -87,10 +93,10 @@
             }
         }
         
-        assertion(typeof param === "i am param", "param is not defined~");
+//        assertion(typeof param === "i am param", "param is not defined~");
         
         //上述方法等同于：
-        console.assert(typeof param === "i am param", "param is not defined~");
+//        console.assert(typeof param === "i am param", "param is not defined~");
         
         
         /*
@@ -101,7 +107,34 @@
         *       3、DOM断点：相当于时 DOM->JS 的调试；
         *       4、根据事件名称、类型进行调试；
         * */
+        var p_ele = document.getElementsByTagName("h3")[0];
+        var remove_btn = document.getElementById("btn1");
+        var modify_btn = document.getElementById("btn2");
+        var attri_btn = document.getElementById("btn3");
+        var removeEle = function () {
+            p_ele.remove();
+        };
+        var modifyEle = function () {
+            p_ele.innerHTML = "Error Event";
+        };
+        var attributeEle = function () {
+            p_ele.style.backgroundColor = "#aaa";
+//            p_ele.className = "add"
+        };
         
+        //DOM断点必须添加给被监控元素的父元素上，在该父元素上右键Break on -> subtree modifications，并且调试时chrome调试窗口需停留在        Elements选项卡上
+        //该断点类型可监控元素的增加、删除修改操作，属性和内容修改不会触发断点，再次右键选择该选项则可取消断点；
+        remove_btn.addEventListener("click", removeEle);
+        
+        //subtree modifications 断点还可检测文本的改变，因为修改innerHTML的操作，是先删除了h3的子文本元素，再添加了新的子文本类型元        素，也是相当于对子元素做了增删的修改，因此可以被检测到；
+        modify_btn.addEventListener("click", modifyEle);
+        
+        //在该元素上右键Break on -> attribute modifications 可检测元素的属性修改，需要注意的是这个断点需要加在被检测的元素自己身上；
+        attri_btn.addEventListener("click", attributeEle);
+        
+        //Event Listener Breakpoints则可以允许我们针对鼠标、键盘、定时器等一系列操作进行检测，极大地方便了我们的代码调试
+        
+                
     </script>
 </body>
 </html>
