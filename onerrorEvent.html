@@ -7,8 +7,11 @@
 </head>
 <body>
     
-    <div>
-        <h3>onerror event</h3>
+    <div class="h1" style="position: absolute;z-index: 100;background-color: antiquewhite">
+        <h3 style="z-index: 30;">onerror event</h3>
+    </div>
+    <div class="h2" style="position: absolute;z-index: 120;background-color: darkorange">
+        <h3 style="z-index: 20;">error 22222</h3>
     </div>
     <button id="btn1">remove</button>
     <button id="btn2">modify</button>
@@ -133,6 +136,35 @@
         attri_btn.addEventListener("click", attributeEle);
         
         //Event Listener Breakpoints则可以允许我们针对鼠标、键盘、定时器等一系列操作进行检测，极大地方便了我们的代码调试
+        
+        
+        /*
+        * 结束语：
+        *       关于Error以及JS调试，上边总结和学习的几点有些确实是工作中用的比较多的，今天也总算把在oppo手机上的几个兼容文件修复完成，
+        *   解决兼容问题的过程其实就是调试JS代码的过程，其实JS的调试大体上有几条思路，只要我们沿着这几天思路去探索，问题自然水落石出，          *   就像侦探面对悬疑事件，一切其实都是有章可循的。
+        *
+        *   今天解决的四个兼容问题：
+        *   1、调用一个element元素的remove方法时报错，原因是 remove() 方法已经被添加到 2011 ( 提交 )的DOM live标准中，并由
+        *       Chrome，Firefox，Safari和 Opera 实现。 但是，在今天，IE有些版本仍然存在不支持的情况。因此，需要先判断浏览器是否
+        *       支持remove()方法，否则的话，我们最好还是在其父元素上调用removeChild()为妥，一般这样的错误情况比较好处理，难在错误
+        *       的定位，首先我们可以考虑全局检测onerror事件，其次用try-catch缩小范围去捕获；
+        *   2、第二个问题是元素的定位及z-index导致的问题，元素之间的位置没处理好导致重叠，从而在该手机上某元素一直点击不了，首先，
+        *       我还是从点击事件的绑定兼容方面考虑，但发现addEventListener是没问题的，其次我将着眼点放在了元素本身，看是否是元素类型
+        *       使用不当，换了a元素，发现依然不行，最后考虑到了元素的css样式，调试了一下，发现果然是样式问题导致元素产生重叠，从而一直
+        *       点击不到的目标元素。
+        *      在弄清这个层叠问题之前有必要先分别了解下定位和z-index，
+        *      定位：
+        *           position属性和float属性，会让元素脱离文档流或相对于在文档流中的位置发生偏移；
+        *      z-index：
+        *           控制元素的堆叠顺序，只能在position值为relative/absolute/fixed的元素上有效，并且它只决定同一父元素中同级子元素
+        *           的堆叠顺序，使用的时候也需要注意，负值的z-index会被透明的body元素覆盖，导致点击等事件无法响应，opacity有时候也
+        *           影响元素逇堆叠顺序；
+        *   3、第三个兼容问题是样式问题，这个确实是我这边的代码写的不够严谨，因此出现了兼容问题，不得不感叹现在的手机兼容能力的强大；
+        *   4、第四个问题是我设置一个元素position为fixed，但是页面下滑时，该元素依然会往下滑，刚开始也是从js代码入手调试，但是发现js并
+        *   没有问题，后来就用脚本控制，给onscroll添加了事件，让页面每次滚动，都设置该元素的top为0；
+        *
+        * */
+        
         
                 
     </script>
