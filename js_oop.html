@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>JS面向对象</title>
+</head>
+<body>
+    <h3>JS面向对象编程</h3>
+
+
+
+
+
+
+
+    <script>
+
+        /*
+         * 面向对象语言的三大特征：封装、继承、多态；
+
+         JS没有提供类的方法，他使用原型继承而非类继承；
+         JS的继承：通过赋予子类一个父类的实例并专门化子类，在较新的浏览器中也可通过Object.create方法来实现；
+
+         JS中，命名空间是一个包含方法、属性、对象的对象；
+
+         JS动态原型的理解：在运行时可以随时改变对象的原型
+         * */
+
+        //我们尝试用Object.create()举个例子
+        var Cat = Object.create(null);
+
+        Object.defineProperties(Cat, {
+            "name" : {value : "Lucy"},
+            "age" : {value : 2}
+        });
+
+        Cat.sayName = function() {
+            console.log(this.name);
+        };
+
+        var cat1 = Object.create(Cat);
+        document.write(cat1.name + ' ' + cat1.age); //console.log打印出来为undefined
+
+        //检测该对象是否有某个属性
+        var nameC = Object.hasOwnProperty(cat1).name;  //Lucy
+
+
+
+
+
+    </script>
+</body>
+</html>
