@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Function</title>
+</head>
+<body>
+    <h3>Function</h3>
+
+    <p>
+        Function类型是掌握JS语言的最基本的要求，写了这么久的JS，今天又回到了最基本的Function类型，系统的回顾一下，带着不一样的视角去看，肯定也会有不一样的发现与理解。
+    </p>
+
+    <script>
+        
+        /*
+        * Function类型：
+        *
+        * 函数是对象，函数名是指针。
+        *
+        *   1、创建函数的三种方式：
+        *       函数声明(存在函数声明提升，会让代码的执行顺序不是很明确，不建议使用);
+        *       函数表达式(常用);
+        *       Function构造函数(new Function("param1", "param2", ...)  最后一个始终被视为函数体，构造函数方法一般情况下不会用到，目前为止只遇到过一次在程序中用到的地方，就是在编写template模板引擎时，我们需要根据用户输入的特殊标识符去解析我们自己拼接的参数已被替换过的html template时，需要自己去构造解析函数，这个时候用到了构造函数法去动态创建函数);
+        *
+        *   2、函数的内部属性：
+        *       arguments & this
+        *       arguments : 类数组对象，有两种方式让其更像数组(JS里边没有真正的数组)，1)[].slice.call(arguments);2)Array.from(arguments)  数组的新方法，不确定是否有兼容行问题;
+        *       this：
+        *       定义：函数以执行的“环境对象”；
+        *       caller：
+        *       定义：该属性保存调用当前函数的函数的引用，可以借此查看函数的调用栈(注：严格模式下，不能为函数的caller属性赋值，否则会导致错误)；
+        *   3、函数逇属性和方法：
+        *       length：表示函数希望接收的命名参数的个数；
+        *       prototype：原型，函数继承自原型的典型的属性是toString、valueOf；
+        *       apply：apply(函数运行的作用域，参数数组)；
+        *       call：call(函数运行的作用域，直接传递过来的参数)
+        *           call、apply都是在特定的作用域中调用函数，相当于设置函数体内的this值；
+        *       bind：创建一个函数的实例
+        * */
+        
+    </script>
+</body>
+</html>
