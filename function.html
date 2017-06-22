@@ -36,8 +36,19 @@
         *       apply：apply(函数运行的作用域，参数数组)；
         *       call：call(函数运行的作用域，直接传递过来的参数)
         *           call、apply都是在特定的作用域中调用函数，相当于设置函数体内的this值；
-        *       bind：创建一个函数的实例
+        *       bind：创建一个函数的实例，也即函数的this值会被绑定到传给bind函数的值；
         * */
+        
+        //bind
+        window.color = "yellow";
+        var obj = {
+            color : "red"
+        };
+        var sayColor = function () {
+            console.log(this.color)
+        };
+        var objSayColor = sayColor.bind(obj);
+        objSayColor();
         
     </script>
 </body>
