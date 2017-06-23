@@ -23,7 +23,31 @@
 
          JS中，命名空间是一个包含方法、属性、对象的对象；
 
-         JS动态原型的理解：在运行时可以随时改变对象的原型
+         JS动态原型的理解：在运行时可以随时改变对象的原型;
+
+         要了解JS的面向对象的特性，首先需要知道该语言的数据类型：
+         1、JS有9种数据类型，6种在代码中常用的（Undefined、Null、String、Boolean、Number、Object[又分为：object、function、array]），3种在程序中永远用不到的(Reference、List、Completion)；
+         2、判断数据类型的方法：
+            typeof(适用于基本数据类型：number、string、boolean、function、undefined)、
+            instanceof(除number、string、boolean、undefined、null，使用前需先判断是否为undefined或null，否则会报错)、
+            constructor(除undefined、null，适用于实例对象)、
+            Object.prototype.toString.call()(该方法可以精确地获得所有对象的数据类型)
+         3、关于undefined和null的一些点：
+            多数情况下，undefined和null总是傻傻分不清楚，用的比较多的就是拿过来一个变量，我到底应该用哪种方式去判断最恰当，用null去判断？还是用undefined去判断？判断了null还需要判断undefined吗？或者我判断了undefined是不是就不用判断null了？
+            首先提一点就是，汤姆大叔记载的，null最开始的数据类型就是Null，后来改为了Object，为方便理清这块儿，我们可以这样理解，null大多数用在对象出现的地方，因此，我们把null归于Object。
+            其次需要理清的一点是null与undefined的关系："null表示一个无的对象，也即此处没有对象；undefined表示无的原始值，也即应该是有值的，但是缺少一个值"
+                null == undefined  --> true
+                Number(null) --> 0
+                Number(undefined) --> NaN
+            null可能出现或使用的情况：将一个对象赋予null，可方便垃圾回收；给一个变量或属性指定一个不变值，将它传递给一个函数，或者从一个函数返回null；Object.getPrototypeOf(Object.prototype) --> null，顶级对象的原型为null；
+            undefined可能出现或使用的情况：除了上述null的情况；
+            (注：在资料的查找过程中发现，好多文章发布其实也不是很久，但是里边的一些知识点已经现在已经不适用，因此知识点的学习需多尝试实践，思维方面的东西可参考网络上的文章。)
+         4、关于对象的一些点：
+            1)、我们在开发中创建对象一般有两种方法，一个是使用构造函数，一个是使用字面量；
+                使用内置构造器创建对象(string、boolean、number)时，如果加new，则我们创建的值的类型为object，如果不加new，则创建的值的类型为基本数据类型。
+            2)、对象、数组、正则，分别有两种方式，一个是构造函数，一个是字面量方法；
+
+
          * */
 
         //我们尝试用Object.create()举个例子
@@ -42,7 +66,8 @@
         document.write(cat1.name + ' ' + cat1.age); //console.log打印出来为undefined
 
         //检测该对象是否有某个属性
-        var nameC = Object.hasOwnProperty(cat1).name;  //Lucy
+//        var nameC = Object.hasOwnProperty(cat1).name;  //Lucy
+
 
 
 
