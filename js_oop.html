@@ -7,12 +7,6 @@
 <body>
     <h3>JS面向对象编程</h3>
 
-
-
-
-
-
-
     <script>
 
         /*
@@ -48,6 +42,15 @@
             2)、对象、数组、正则，分别有两种方式，一个是构造函数，一个是对象初始化器{}、数组初始化器[]、和正则表达式初始化器//；
             3)、var obj = {}; obj.valueOf() === obj --> true
 
+         5、构造函数的返回值也会影响原型：
+            若返回this或undefined则不影响；
+         6、显式prototype和隐式prototype：
+            一个对象的原型通过函数的prototype属性引用是不正确的(http://www.cnblogs.com/TomXu/archive/2012/02/06/2330609.html)；
+            修改构造函数的prototype属性，不会影响已创建的对象的原型，已创建的对象的原型已经不能被修改(也即意味着我们创建对象之后再修改原型已无意义),新原型仅仅在原型修改以后的新创建对象上生效；
+            网络上有个很形象的等式：
+            修改prototype前 ： a.[[Prototype]] ----> Prototype <---- A.prototype
+            修改prototype后 ： A.prototype ----> New prototype ; a.[[Prototype]] ----> Prototype
+            对象的[[prototype]]和构造函数的prototype属性一样的时候，instanceof才会返回true
          * */
 
         //我们尝试用Object.create()举个例子
@@ -71,14 +74,54 @@
         //new  valueOf()
         var num = new Number(123);
         var num2 = Number(321); //相当于自动调用了valueOf()方法
-        console.log(typeof num == "object");
-        console.log(typeof num2 == "number");
+        console.log(typeof num == "object"); //true
+        console.log(typeof num2 == "number"); //true
 
 
+        var Origin = function() {
+            this.x = 1;
+            return [1,2];
+        };
+        var o = new Origin();
+        console.log(o.constructor == Array); //true
 
+        var Origin2 = function() {
+            this.x = 1;
+//            return undefined;
+            return this;
+        };
+        var o2 = new Origin2();
+        console.log(o2.constructor == Origin); //true
 
+        //显式prototype和隐式prototype
+        Origin2.prototype = {
+            constructor : Origin2,
+            x : 1,
+            y : 2
+        };
+        var o3 = new Origin2();
+        console.log("o3.y : ", o3.y); //2
+        console.log("o2.y : ", o2.y); //undefined
 
+        //显式将对象的原型改为新的原型
+        o2.__proto__ = {
+            constructor : Origin2,
+            x : 1,
+            y : 2
+        };
+        console.log("after operate o2.y : ", o2.y);
 
+        //instanceof
+        var Dog = function () {}
+        var dog1 = new Dog();
+        console.log("dog1 instanceof Dog : ", dog1 instanceof Dog);//true
+        var Bird = function () {};
+        var _proto = {
+            constructor : Bird
+        };
+        Bird.prototype = _proto;
+        dog1.__proto__ = _proto;
+        console.log("bird1 instanceof Dog : ", dog1 instanceof Bird);//true
 
     </script>
 </body>
