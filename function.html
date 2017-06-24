@@ -30,13 +30,21 @@
         *       定义：函数以执行的“环境对象”；
         *       caller：
         *       定义：该属性保存调用当前函数的函数的引用，可以借此查看函数的调用栈(注：严格模式下，不能为函数的caller属性赋值，否则会导致错误)；
-        *   3、函数逇属性和方法：
+        *   3、函数的属性和方法：
         *       length：表示函数希望接收的命名参数的个数；
         *       prototype：原型，函数继承自原型的典型的属性是toString、valueOf；
         *       apply：apply(函数运行的作用域，参数数组)；
         *       call：call(函数运行的作用域，直接传递过来的参数)
         *           call、apply都是在特定的作用域中调用函数，相当于设置函数体内的this值；
         *       bind：创建一个函数的实例，也即函数的this值会被绑定到传给bind函数的值；
+        *
+        *
+        * 基本包装类型(这一部分也与我的笔记摘要js_oop里边记录的知识点相对应)：
+        *   Number、String、Boolean
+        *   1、每当读取一个基本类型值的时候，后台就会创建一个对应的基本包装类型的对象，从而能够让我们调用一些方法来操作这些数据；
+        *   2、引用类型与基本包装类型的主要区别就是对象的生存期，JS高程里边是这样讲的：
+        *           使用new操作符创建的是引用类型的实例(这也是 typeof 'new Number(123)' == 'obj' 为true，并且所有的基本包装类型的对象会被转换为布尔值true 的原因)，在执行刘离开当前作用域之前都一直保存在内存中；而自动创建的基本包装类型的对象，则只存在与一行代码的执行瞬间(可能我们知道代码是如何返回的，而不知道原理是这个)，这一行代码执行完之后就会立即销毁(这也是 typeof Number(123) == 'number' 的原因)。
+        *
         * */
         
         //bind
@@ -49,6 +57,18 @@
         };
         var objSayColor = sayColor.bind(obj);
         objSayColor();
+        
+        
+        //Boolean  Object
+        var fals_obj = new Boolean(false);
+        console.log(fals_obj && true); //true,因为false_obj 为基本包装类型的实例对象，而所有的基本包装类型的对象都会被转换为true
+        var fals_val = false;
+        console.log(fals_val && true); //false
+        console.log("typeof fals_obj : ", typeof fals_obj);
+        console.log("typeof fals_val : ", typeof fals_val);
+        console.log("fals_obj instanceof Boolean : ", fals_obj instanceof Boolean);
+        console.log("fals_val instanceof Boolean : ", fals_val instanceof Boolean);
+        
         
     </script>
 </body>
