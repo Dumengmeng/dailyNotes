@@ -135,7 +135,24 @@
         //报错，因为他会把点处理为1的小数点，而非点操作符
 //        1.toString() //Uncaught SyntaxError: Invalid or unexpected token
         1..toString(); //'1'
-    
+
+        //利用空对象进行 以及父对象的原型 进行继承
+        function extend(parent, child) {
+            var O = function() {};
+            O = parent.prototype;
+            child.prototype = new O();
+        }
+
+        //拷贝继承
+        function extend2(Par, Child) {
+            var p = Par.prototype;
+            var c = Child.prototype;
+            for (var i in p) {
+                c[i] = p[i];
+            }
+            c.uber = p;
+        }
+
 
 
     </script>
