@@ -51,6 +51,10 @@
             修改prototype前 ： a.[[Prototype]] ----> Prototype <---- A.prototype
             修改prototype后 ： A.prototype ----> New prototype ; a.[[Prototype]] ----> Prototype
             对象的[[prototype]]和构造函数的prototype属性一样的时候，instanceof才会返回true
+            总之，实例的原型独立于构造函数和构造函数的prototype属性
+         7、属性访问器：
+            1、两种方式：点操作符和索引法
+            2、如果是对原始值进行属性访问，访问之前会先对原始值进行对象包装（包括原始值），然后通过包装的对象进行访问属性，属性访问以后，包装对象就会被删除。这一点尤其重要，这个可以解释为什么在基本类型上赋值后而取不到属性值的现象，因此，我们也可以得出一个结论，任何原始值，如果是经常用来取属性的话，我们可以用一个对象来代替，这样他就不用每次在取值的时候到原型上去找。
          * */
 
         //我们尝试用Object.create()举个例子
@@ -122,6 +126,34 @@
         Bird.prototype = _proto;
         dog1.__proto__ = _proto;
         console.log("bird1 instanceof Dog : ", dog1 instanceof Bird);//true
+
+        var num = Object(1);
+        var str = Object("123");
+        console.log("Object.prototype.toString.call(num) : ", Object.prototype.toString.call(num));
+        console.log("Object.prototype.toString.call(str) : ", Object.prototype.toString.call(str));
+
+        //报错，因为他会把点处理为1的小数点，而非点操作符
+//        1.toString() //Uncaught SyntaxError: Invalid or unexpected token
+        1..toString(); //'1'
+
+        //利用空对象进行 以及父对象的原型 进行继承
+        function extend(parent, child) {
+            var O = function() {};
+            O = parent.prototype;
+            child.prototype = new O();
+        }
+
+        //拷贝继承
+        function extend2(Par, Child) {
+            var p = Par.prototype;
+            var c = Child.prototype;
+            for (var i in p) {
+                c[i] = p[i];
+            }
+            c.uber = p;
+        }
+
+
 
     </script>
 </body>
