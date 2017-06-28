@@ -24,6 +24,8 @@
         *
         *
         * location
+        *   1、特殊之处：既是window的对象，又是document的对象；
+        *   2、关于location对象常见的需求是解析查询字符串；
         *
         * navigator
         *
@@ -51,6 +53,28 @@
         var timeoutId2 = setTimeout(function () {
             console.log(timeoutId);//1
         }, 2000);
+        
+        //eg.3 解析查询字符串
+        var getQueryObj = function () {
+            var url = window.location.search.length ? window.location.search.slice(1) : "",
+                url_arr = url.length ? url.split("&") : [],
+                temp_obj = {},
+                temp_arr = [],
+                key,
+                val;
+            url_arr.forEach(function (item) {
+                temp_arr = item.split("=");
+                //此处一定不要忘了转码处理
+                key = decodeURIComponent(temp_arr[0]);
+                val = decodeURIComponent(temp_arr[1]);
+                key.length && (temp_obj[key] = val);
+            });
+            return temp_obj;
+        };
+        console.log(getQueryObj());
+        
+        
+        
     </script>
 </body>
 </html>
