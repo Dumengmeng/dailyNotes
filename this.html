@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width"/>
+    <title>this</title>
+</head>
+<body>
+
+    <h3>This</h3>
+
+    <p></p>
+
+    <script>
+
+        /*
+        * this
+        *
+        * 0、this是在运行时绑定的，this的绑定取决于函数的调用方式；
+        *       this调用规则：
+        *       1)默认绑定:
+        *           由eg.3 和 eg.3.3，非严格模式下，this默认绑定window，而严格模式下为undefined；
+        *       2)隐式绑定：
+        *
+        *       3)显式绑定；
+        *       4)new绑定；
+        * 1、关联与原型、对象，this的使用可以避免代码看起来混乱，可以将API设计的更简洁和便于复用；
+        * 2、this使用的地方一般也可以用词法作用域解决，但是我们需要明晰某个地方到底应该使用this还是词法作用域；
+        * 3、若是在全局调用某个方法，若要将this绑定到当前的方法fun上，则可以在自己身上调用call，将this手动指向fun，而非window：fun.call(fun);
+        *
+        * */
+
+
+        //eg.1 ++操作符，第一次操作，将操作数转换为数字
+        var num = '123';
+        console.log(num++);
+
+        //eg.2 调试工具看 调用栈 及 this对象
+        function upper() {
+            this.name = 'a';
+            console.log("upper");
+            subber();
+        }
+        function subber() {
+//            debugger;
+            console.log("subber", this.name);
+        }
+        upper();
+
+        //eg.3 默认绑定
+        function autoBind() {
+            'use strict';
+            try {
+                console.log("autoBind this : ", this);
+                console.log("auto bind : ", this.num);
+            } catch (e) {
+                console.log(e)
+            }
+        }
+        autoBind();
+
+        //eg.3.3 默认绑定：严格模式只是影响 this是否绑定到了全局对象window上
+        function autoBind2() {
+            console.log("autoBind2 this : ", this);
+            console.log("auto bind 2 : ", this.num);
+        }
+        (function() {
+            'use strict';
+            autoBind2();
+        })()
+
+
+
+
+
+
+    </script>
+</body>
+</html>
