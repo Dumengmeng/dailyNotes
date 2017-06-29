@@ -46,6 +46,18 @@
                 getInstance: getInstance
             }
         })();
+
+        var single2 = (function() {
+            var unique;
+            function Instance() {
+                // ... 生成单例的构造函数的代码
+            }
+            return function() {
+                return unique || (unique = new Instance())
+            }
+        })();
+
+        /************note：single为对象，指向一个自执行函数这样的情况***************/
         var s1 = single.getInstance();
         var s2 = single.getInstance();
         console.log(s1 === s2); //true
