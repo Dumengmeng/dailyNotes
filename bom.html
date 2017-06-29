@@ -4,14 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
     <title>BOM</title>
+    <style>
+        div{
+            height: 500px;
+        }
+    </style>
 </head>
 <body>
     
     <h3>BOM</h3>
+    <!--<a href="#link">12</a>-->
+    <span>link</span>
     <p>
-        浏览器对象模型作为前端代码的运行平台及JS编译器，无疑是JS的核心，一些最基本的BOM对象纳入了H5标准。
+        浏览器对象模型作为前端代码的运行平台及JS编译器，无疑是JS的核心，一些最基本的BOM对象被纳入了H5标准。
     </p>
-
+    <div>link</div>
+    <div>link</div>
+    <div name="link" id="link">link</div>
     <script>
         
         /*
@@ -24,14 +33,33 @@
         *
         *
         * location
+        *   0、path、host、hostname、port、protocol、pathname、search、hash、assign、replace、reload；
         *   1、特殊之处：既是window的对象，又是document的对象；
         *   2、关于location对象常见的需求是解析查询字符串；
+        *   3、修改location的任意属性(除了hash是定位到页面的某个位置)以及调用reload、replace方法都会让页面重新装载当前文档；
+        *   4、关于reload方法，他允许传一个参数进去，若页面自上次请求之后没有改变过，则会从缓存中取：
+        *           location.reload() //重新加载，可能从缓存中加载
+        *           location.reload(true) //强制从服务器从新加载
+        *      reload之后的代码不确定是否会执行，因此使用时需注意；
+        *
         *
         * navigator
+        *   1、通过该对象，我们可以获取关于客户端浏览器的所有信息，用的较多的是userAgent用户代理这个属性；
+        *
         *
         * screen
+        *   该对象开发中使用频率较低，并且属性在各个浏览器的兼容问题比较多
         *
-        * history
+        *
+        * history（http://javascript.ruanyifeng.com/bom/history.html）
+        *   1、处于安全考虑，我们无法得知用户的上网历史记录，是一个只读特性；
+        *   2、go()：跳转指定的页数，若参数为字符串，则会跳转到历史记录中包含该字符串的位置；
+        *      forword()：前进一页
+        *      back()：后退一页
+        *      length：对于第一个打开的页面，length为1
+        *   3、pushState():不会导致页面刷新，只是在浏览器历史记录栈里添加了一条新的记录（必须同域）；
+        *      replaceState():不会刷新当前页面，只是替换当前在浏览器历史中的记录；
+        *
         * */
         
         
@@ -72,6 +100,38 @@
             return temp_obj;
         };
         console.log(getQueryObj());
+        
+        //eg.4获取窗口的大小以及页面的位置和宽高等信息，很庆幸在网上发现了一段很‘长’的代码：
+        function getInfo(){
+            var s = "";
+            s += " 网页可见区域宽："+ document.body.clientWidth;
+            s += " \n网页可见区域高："+ document.body.clientHeight;
+            s += " \n网页可见区域宽："+ document.body.offsetWidth + " (包括边线和滚动条的宽)";
+            s += " \n网页可见区域高："+ document.body.offsetHeight + " (包括边线的宽)";
+            s += " \n网页正文全文宽："+ document.body.scrollWidth;
+            s += " \n网页正文全文高："+ document.body.scrollHeight;
+            s += " \n网页被卷去的高(ff)："+ document.body.scrollTop;
+            s += " \n网页被卷去的高(ie)："+ document.documentElement.scrollTop;
+            s += " \n网页被卷去的左："+ document.body.scrollLeft;
+            s += " \n网页正文部分上："+ window.screenTop;
+            s += " \n网页正文部分左："+ window.screenLeft;
+            s += " \n屏幕分辨率的高："+ window.screen.height;
+            s += " \n屏幕分辨率的宽："+ window.screen.width;
+            s += " \n屏幕可用工作区高度："+ window.screen.availHeight;
+            s += " \n屏幕可用工作区宽度："+ window.screen.availWidth;
+            s += " \n你的屏幕设置是 "+ window.screen.colorDepth +" 位彩色";
+            s += " \n你的屏幕设置 "+ window.screen.deviceXDPI +" 像素/英寸";
+            alert (s);
+        }
+        
+        
+        var spanEle = document.getElementsByTagName("span")[0];
+        spanEle.addEventListener("click", function () {
+            //在浏览器的历史记录中会生成一条新的记录
+            location.hash = "#link";
+            //不会生成记录
+//            location.replace(location.href + "#link");
+        })
         
         
         
