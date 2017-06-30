@@ -41,6 +41,8 @@
         *           location.reload() //重新加载，可能从缓存中加载
         *           location.reload(true) //强制从服务器从新加载
         *      reload之后的代码不确定是否会执行，因此使用时需注意；
+        *   5、URLSearchParams：
+        *           偶然发现，针对location.search还有这个API，可以让我们更方便的操作搜索参数（见eg.3.3）；
         *
         *
         * navigator
@@ -100,6 +102,14 @@
             return temp_obj;
         };
         console.log(getQueryObj());
+
+        //eg.3.3 URLSearchParams只能操作？之后的查询字符串
+        var getQueryObj2 = function (key) {
+            var searchPara = window.location.search;
+            var searchStr = searchPara && searchPara.slice(1);
+            return (URLSearchParams && key) ? (new URLSearchParams(searchStr)).get(key) : getQueryObj()[key];
+        };
+
         
         //eg.4获取窗口的大小以及页面的位置和宽高等信息，很庆幸在网上发现了一段很‘长’的代码：
         function getInfo(){
@@ -131,7 +141,12 @@
             location.hash = "#link";
             //不会生成记录
 //            location.replace(location.href + "#link");
-        })
+        });
+
+        //eg.5 只要点击前进、后退按钮、go、forward、back都会触发popstate事件
+        window.onpopstate = function(event) {
+            console.log('state: ' + JSON.stringify(event));
+        }
         
         
         
