@@ -129,7 +129,15 @@
         var b = bar3(3);
         console.log(b)
 
-        //
+        //API中的上下文
+        var arr = [1,2,3];
+        var fun4 = function (item) {
+            console.log(item, this.id);
+        };
+        var obj3 = {
+            id : "some id"
+        };
+        arr.forEach(fun4, obj3);
 
 
 
