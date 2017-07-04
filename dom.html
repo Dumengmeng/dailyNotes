@@ -17,7 +17,11 @@
         *   DOM2：在DOM1的基础上引入了更多的交互能力，如视图、事件、样式、遍历和范围等。
         *   DOM3：进一步扩展DOM，如加载和保存模块、验证模块、核心的扩展。
         * DOM类型：
-        *
+        *   1)JS中所有节点都继承自Node类型；
+        *   2)将node的nodeType属性值与对应的数值进行判断，即可知道该node是否是或不是某类型；
+        *   3)每个节点都有一个childNodes属性，保存着NodeList对象，我们可视其为"动态的类数组对象";
+        *   4)每个节点都有一个parentNode节点，若不存在则为null；
+        *   5)查询一个节点是否有子节点，用hasChildNodes()方法要比 childNodes.length 方便很多；
         *
         * DOM操作：
         *
