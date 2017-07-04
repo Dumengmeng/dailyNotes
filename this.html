@@ -21,8 +21,12 @@
         *       1)默认绑定:
         *           由eg.3 和 eg.3.3，非严格模式下，this默认绑定window，而严格模式下为undefined；
         *       2)隐式绑定：
-        *
+        *           1)看调用位置是否有上下文，若有上下文对象，则函数的this绑定到该上下文对象上；
+        *           2)对象属性引用链中只有上一层或最后一层在调用位置起作用，也调用栈的最上层；
+        *           3)调用回调函数的函数可能会修改this；
         *       3)显式绑定；
+        *           1)call、apply；
+        *           2)硬绑定;
         *       4)new绑定；
         * 1、关联与原型、对象，this的使用可以避免代码看起来混乱，可以将API设计的更简洁和便于复用；
         * 2、this使用的地方一般也可以用词法作用域解决，但是我们需要明晰某个地方到底应该使用this还是词法作用域；
@@ -31,7 +35,7 @@
         * */
 
         //eg.1 ++操作符，第一次操作，将操作数转换为数字
-        var num = '123';
+        var num = '全局对象的属性：123';
         console.log(num++);
 
         //eg.2 调试工具看 调用栈 及 this对象
@@ -66,8 +70,74 @@
         (function() {
             'use strict';
             autoBind2();
-        })()
+        })();
 
+
+        //eg.4.1 隐式绑定
+        var fun1 = function () {
+            console.log("隐式调用 ： ", this.a);
+        };
+        var obj1 = {
+            a : 123,
+            fun1 : fun1
+        };
+        var obj2 = {
+            a : 456,
+            obj1 : obj1
+        };
+        obj2.obj1.fun1();
+
+        //eg.4.2 隐式绑定丢失
+        var bar = obj1.fun1;
+        var a = "全局对象属性a : 333";
+        //this并没有绑定到obj1对象上，因为bar引用的是foo函数的本身，因此，fun1的调用其实没有带任何修饰
+        bar(num);
+        //这是另外一种情况
+        var doFun = function (fun) {
+            //参数传递，其实是一种隐式赋值
+            fun();
+        };
+        doFun(obj1.fun1);
+
+        //eg.5
+        var fun2 = function () {
+            console.log("显式调用 : ", this.a);
+        };
+        fun2.apply(obj1);
+
+        var bar2 = function () {
+            fun2.apply(obj1);
+        };
+
+
+        //eg.6 硬绑定：如下例所示的显式的强制绑定
+        //结果与隐式绑定不同
+        bar2();
+        //显式绑定也不能修改this的值,因为不管在什么环境调用bar2，函数的内部都会手动将this绑定到obj1身上
+        bar2.apply(window);
+
+        //eg.7
+        var fun3 = function (num) {
+            console.log(this.a, num);
+            return this.a + num;
+        };
+
+        var bar3 = function (b) {
+            return fun3.apply(obj2, arguments);
+        };
+
+        var b = bar3(3);
+        console.log(b)
+
+        //API中的上下文
+        var arr = [1,2,3];
+        var fun4 = function (item) {
+            console.log(item, this.id);
+        };
+        var obj3 = {
+            id : "some id"
+        };
+        arr.forEach(fun4, obj3);
 
 
 
