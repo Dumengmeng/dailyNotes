@@ -17,13 +17,30 @@
         *   DOM2：在DOM1的基础上引入了更多的交互能力，如视图、事件、样式、遍历和范围等。
         *   DOM3：进一步扩展DOM，如加载和保存模块、验证模块、核心的扩展。
         * DOM类型：
+        *   1、Node节点；
         *   1)JS中所有节点都继承自Node类型；
         *   2)将node的nodeType属性值与对应的数值进行判断，即可知道该node是否是或不是某类型；
         *   3)每个节点都有一个childNodes属性，保存着NodeList对象，我们可视其为"动态的类数组对象";
         *   4)每个节点都有一个parentNode节点，若不存在则为null；
         *   5)查询一个节点是否有子节点，用hasChildNodes()方法要比 childNodes.length 方便很多；
         *
+        *   2、Document节点：
+        *   1)document是window的一个属性；
+        *   2)document.documentElement &document.body;
+        *   3)document.title可读写；
+        *   4)需要注意，页面中尽量不要使表单元素的name属性，与某个元素的id值相同；
+        *   5)getElementsByTagName()返回一个HTMLCollection对象，与NodeList集合很像
+        *       两者的区别在于：前者是一个元素集合，只有Element，而后者是节点集合，可能包含所有的节点类型；
+        *
+        *
         * DOM操作：
+        *   1)最常用的方法是appendChild()，该方法返回被append的子节点；
+        *   2)insertBefore(/要插入的节点/,/作为参照的节点/)，返回被插入的节点；
+        *   3)replaceChild(/要插入的节点/,/要替换的节点/)，返回被替换的节点；
+        *   4)removeChild(/要移除的节点/)(之前在onerrorEvent.html里边记录过一个bug，就是由于使用的remove方法存在兼容性问题，因此建议使用removeChild方法)，返回被移除的节点；
+        *   5)尤其要注意的是，若某个节点不支持子节点，则在该节点身上调用上述方法会报错；
+        *   6)cloneNode(/boolean/),boolean为true为深复制，boolean为false则为潜复制；
+        *   7)normalize()主要操作文本节点，删除空文本节点或复制相邻的兄弟节点；
         *
         *
         * DOM常用API：
