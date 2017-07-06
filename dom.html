@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
     <title>DOM</title>
 </head>
 <body>
 
     <h3>DOM</h3>
+    <p class="pl" data-load="done" style="color: #d30775;font-size: 20px;">parageaph</p>
 
     <script>
         
@@ -32,6 +34,13 @@
         *   5)getElementsByTagName()返回一个HTMLCollection对象，与NodeList集合很像
         *       两者的区别在于：前者是一个元素集合，只有Element，而后者是节点集合，可能包含所有的节点类型；
         *
+        *   3、Element节点：
+        *   1)getAttribute():获取指定属性的值，包括自定义属性的值，若不存在则返回null；
+        *   2)setAttribute():添加属性；
+        *   3)removeAattribute():移除属性;
+        *   4)需要注意的是有两个属性获得的值是不可靠的，style & onclick，因此我们一般不建议使用该方法获取属性，而是直接使用对象的属性去获得，只有在通过自定义特性值的情况下，才会使用该方法;
+        *
+        *
         *
         * DOM操作：
         *   1)最常用的方法是appendChild()，该方法返回被append的子节点；
@@ -41,6 +50,7 @@
         *   5)尤其要注意的是，若某个节点不支持子节点，则在该节点身上调用上述方法会报错；
         *   6)cloneNode(/boolean/),boolean为true为深复制，boolean为false则为潜复制；
         *   7)normalize()主要操作文本节点，删除空文本节点或复制相邻的兄弟节点；
+        *   8)特殊集合：document.images 、 document.links  、 document.forms...;
         *
         *
         * DOM常用API：
@@ -49,6 +59,15 @@
         * DOM2&DOM3：
         *
         * */
+        
+        var pEle = document.getElementsByTagName("p");
+        var valP = pEle.length && pEle[0].getAttribute("data-load");
+        var valP2 = pEle.length && pEle[0].className;//直接通过对象的属性获得
+        var cssP = pEle.length && pEle[0].getAttribute("style");//返回一个字符串
+        var styleP = pEle.length && pEle[0].style;//返回一个对象
+        
+        
+        
         
     </script>
 </body>
