@@ -47,7 +47,7 @@
         *   3)可通过nodeValue获取或者设置该节点的值；
         *
         *   5、DocumentFragment类型：
-        *   1)用来保存文档片段；
+        *   1)用来保存文档片段，是一种轻量级的片段，不会占用额外的资源；
         *
         *
         * DOM操作：
@@ -59,20 +59,43 @@
         *   6)cloneNode(/boolean/),boolean为true为深复制，boolean为false则为潜复制；
         *   7)normalize()主要操作文本节点，删除空文本节点或复制相邻的兄弟节点；
         *   8)特殊集合：document.images 、 document.links  、 document.forms...;
+        *   注：DOM操作往往是JS程序开销中最大的部分；
         *
         *
         * DOM常用API：
+        *   1)querySelector()
+        *   2)querySelectorAll():返回一个NodeLsit，能够调用该方法的类型包括Document、DocumentFragment、Element；
+        *   3)matchSelector():若调用元素与该选择符匹配，则返回true，但目前还未得到所有浏览器的支持，chrome支持webkitMatchesSelector方法；
+        *   4)元素遍历：
+        *       a、childElementCount；
+        *       b、firstElementChild；
+        *       c、lastElementChild；
+        *       d、previousElementSibling；
+        *       e、nextElementSibling；
         *
+        *  HTML5：
+        *   1)getElementsByClassName():参数为一个或多个类名的字符串，多个类名之间以空格分开，返回NodeList，
+        *   2)className:该属性方便我们操作类名，它是新类型集合DOMTokenList的实例，他拥有的方法add、contains、remove、toggle可以方便的让我们操作类名， 并且这些类名操作会即时的反应到DOM文档上；
+        *   3)自定义属性dataset属性是一个DOMStringMap的一个实例，也即一个名值对的映射；
+        *   4)childrens:属于HTMLCollection对象的实例，其他特性均与ChildNode相同，该属性非常完美的避免了各浏览器处理文本节点之间的差异；
+        *   5)contains():该方法用来判断某节点是不是另一个节点的后代；
+        *   6)scrollIntoView():作用对象是元素的容器；
         *
         * DOM2&DOM3：
         *
         * */
         
-        var pEle = document.getElementsByTagName("p");
-        var valP = pEle.length && pEle[0].getAttribute("data-load");
-        var valP2 = pEle.length && pEle[0].className;//直接通过对象的属性获得
-        var cssP = pEle.length && pEle[0].getAttribute("style");//返回一个字符串
-        var styleP = pEle.length && pEle[0].style;//返回一个对象
+        var pEle = document.getElementsByTagName("p")[0];
+        var valP = pEle.getAttribute("data-load");
+        var valP2 = pEle.className;//直接通过对象的属性获得
+        var cssP = pEle.getAttribute("style");//返回一个字符串
+        var styleP = pEle.style;//返回一个对象
+
+//        获取自定义属性
+        console.log("pEle 自定义属性：" + pEle.dataset.load);
+
+//        设置自定义属性
+        pEle.dataset.time = "20170709";
         
         
         
