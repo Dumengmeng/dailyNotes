@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
     <title>DOM</title>
+    <style>
+        p{
+            float: left;
+            border: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
 
@@ -82,6 +88,15 @@
         *   6)scrollIntoView():作用对象是元素的容器；
         *
         * DOM2&DOM3：
+        *   1)DOM2和DOM3里边主要是对样式的操作：
+        *       任何支持style特性的HTML元素，都有一个对于的style属性，该属性是CSSStyleDeclaration的实例，
+        *       它包含通过HTML的style特性指定的样式信息，但不包含外部或嵌入样式表层叠来的信息;
+        *   2)在获取元素的样式时，由于float是保留字，因此要用cssFloat来获取对于的属性,IE支持的是styleFloat；
+        *   3)ele.style.cssText:获取元素的css代码，在写入模式下，csstText会重写整个style特性；
+        *   4)ele.style.removeProperty('border') : 移除元素的特定样式；
+        *   5)document.defaultView.getComputedStyle('myDiv') : 他获取的是一个CSSStyleDeclaration的实例，获取元素所有层叠而来的样式，包括默认的样式；
+        *   注：所有计算的样式都是只读的；
+        *
         *
         * */
         
