@@ -117,6 +117,56 @@
         console.log("truck2 : ", truck2);
         
         
+        //使用多个装饰对象: 据此，我们差不多已经对装饰者有了比较清晰的认识，也即当我们想扩充某个对象的实例的属性或方法时，我们不在对象的原型上扩充，而是额外创建了一些构造函数，通过实例化这些构造函数来扩充属性或者方法，因此Macbook对象依然是不受到影响的，在这个充当扩充属性或方法的装饰者内部 ，我们先获取了要修改的属性或方法，然后对其进行扩充，再将其覆盖到被操作的对象上；
+        function MacBook() {
+            
+            this.cost = function() { return 1000 };
+            this.screenSize = function() { return 11.6 };
+        }
+        
+        //Decorator1
+        function Memory(macbook) {
+            
+            var v = macbook.cost();
+            macbook.cost = function () {
+                return v + 75;
+            };
+            
+        }
+        
+        //Decorator2
+        function Engraving(macbook) {
+            
+            var v = macbook.cost();
+            macbook.cost = function () {
+                return v + 200;
+            };
+            
+        }
+        
+        //Decorator3
+        function Insurance(macbook) {
+            
+            var v = macbook.cost();
+            macbook.cost = function () {
+                return v + 25;
+            };
+            
+        }
+        
+        var mac = new MacBook();
+        Memory(mac);
+        Engraving(mac);
+        Insurance(mac);
+        
+        console.log(mac.cost());
+        console.log(mac.screenSize());
+        
+        
+        
+        
+        
+        
         
 
 
