@@ -162,11 +162,41 @@
         console.log(mac.cost());
         console.log(mac.screenSize());
         
+        //接口，伪经典装饰者，该装饰模式的特殊变体是用于引用目的，但是的确比较复杂和难于理解，因此，我们可以跳过此部分。
+        function Interface(str, arr) {}
+        var reminder = new Interface("List", ["summary", "placeOrder"]);
+        
+        var propertise = {
+            name : "Remember to buy the milk",
+            date : "05/06/2017",
+            actions : {
+                summary : function () {
+                    return "Remember to but the milk, we...";
+                },
+                placeOrder : function () {
+                    return "Ordering some food from the store";
+                }
+            }
+        };
+        
+        //构建构造函数实现上述属性和方法
+        function Todo(config) {
+            //为了支持这些功能，接口实例需要检查这些功能
+            Interface.ensureImplements(config.actions, reminder);
+            this.name = config.name;
+            this.methods = config.actions;
+        }
+        
+        //构建TODO构造函数的新实例
+        var todoItem = Todo(propertise);
+        
+        //测试新属性是否可用
+//        console.log(todoItem.methods.summary());
         
         
-        
-        
-        
+        /*
+        * 抽象装饰者 & 使用jQuery的装饰者
+        * */
         
 
 
