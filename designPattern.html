@@ -196,7 +196,94 @@
         
         /*
         * 抽象装饰者 & 使用jQuery的装饰者
+        * 为实现对mac的一些升级功能，我们需要考虑不同的组合情况，因此我们可以创建五个新的装饰类，在这些增强类上调用的方法会被传递给Mackbook类
         * */
+        var Macbook2 = new Interface("Macbook", [
+            "addEngraving",
+            "addParallels",
+            "add4GBRAM",
+            "ADD8GBRAM",
+            "addCase"
+        ]);
+        
+        var MackbookPro = function () {
+
+        };
+        
+        MacbookPro.prototype = {
+            addEngraving : function () {
+                
+            },
+            addParallels: function () {
+                
+            },
+            add4GBRAM : function () {
+                
+            },
+            add8GBRAM : function () {
+                
+            },
+            addCase : function () {
+                
+            },
+            addPrice : function () {
+                return 900.00;
+            }
+        };
+        
+        //Macbook装饰者抽象装饰者类
+        var MacbookDecorator = function (macbook) {
+            Interface.ensureImplements(macbook, Macbook);
+            this.macbook = macbook;
+        };
+        
+        MacbookDecorator.prototype = {
+            addEngraving: function () {
+                return this.macbook.addEngraving();
+            },
+            addParallels: function () {
+                return this.macbook.addParallels();
+            },
+            add4GBRAM: function () {
+                return this.macbook.add4GBRAM();
+            },
+            add8GBRAM: function () {
+                return this.macbook.add8GBRAM();
+            },
+            addCase: function () {
+                return this.macbook.addCase();
+            },
+            addPrice: function () {
+                return this.macbook.getPrice();
+            }
+        };
+        
+        var CaseDecorator = function (macbook) {
+            
+            //调用超类的构造函数
+            this.superclass.constructor(macbook);
+        };
+        
+        //扩展超类
+        ectend(CaseDecorator, MacbookDecorator);
+        
+        CaseDecorator.prototype.addCase = function () {
+            return this.macbook.addCase() + "Aadding case to macbook";
+        };
+        
+        CaseDecorator.prototype.getPrice = function () {
+            return this.macbook.getPrice() + 45.00;
+        };
+        
+        //实例化Macbook
+        var myMacbookPro = new MackbookPro();
+        //装饰Macbook
+        myMacbookPro = new CaseDecorator((myMacbookPro));
+        
+        
+        
+        
+        
         
 
 
