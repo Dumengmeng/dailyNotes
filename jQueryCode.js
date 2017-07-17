@@ -8,7 +8,13 @@
 *   2、将里边的接口挂载到全局对象上，才能对外开放使用；
 * */
 
-(function (window) {
+(function (win, undefined) {
+    //传入参数window：
+    // 1、查找速度：window是最顶级的对象，查找起来会比较慢，根据就近原则，若传入window，则在使用的时候直接用这个参数window这个局部变量，而不是去查找最外层的全局变量window对象，提高了效率；
+    //2、压缩：若不传入window,压缩的时候不会使用别名代替,若传入的话，则可以使用任何别名代替，这在压缩的时候很有用；
+
+    //传入undefined
+    //undefined 在某些浏览器里边是会被修改的，为防止个别情况下undefined被修改，因此若传入该参数，库里边有用到undefined的地方就是直接找到该参数，这样从而确保了undefined是未被修改过的（未被传入的参数，自然就是undefined），而不是去外边查找值不确定的undefined，但在新版本的浏览器中已经不能修改undefined值了；
 
     //1、定义变量和函数
     var jQuery = function() {};
@@ -59,8 +65,8 @@
     }
 
     //最后一步、将jQuery函数挂载到全局对象上
-    if (typeof window === "object" && typeof window.document === "object") {
-        window.jQuery = window.$ = jQuery;
+    if (typeof win === "object" && typeof win.document === "object") {
+        win.jQuery = win.$ = jQuery;
     }
 
 })(window);
