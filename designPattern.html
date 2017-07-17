@@ -18,15 +18,23 @@
         * Design Patterns:
         * 1、Single Pattern：
         *       1）单例模式一般适用于只需要创建一个实例对象的地方；
+        *
         * 2、Constructor Pattern：
         *       1）构造函数模式是JS最接近面向对象编程的一种模式，这里边牵扯到了new关键字，进而是this，进而还有继承和原型链等；
         *       2）不使用new关键字的话，就相当于在全局调用了函数，将变量属性都绑定到全局，因此我们为避免忘记new关键字而导致的潜在问题，我们可以强制使用new；
+        *
         * 3、Builder Pattern：
         *       1）创建模式主要是针对过程，也即代码的实现和调用进行分离，牵扯到了回调等，相对来说会在开发中出现的比较多的一种模式（待续）；
-        * 3、Factory Pattern；
+        *
+        * 4、Factory Pattern；
         *       1）工厂模式的使用场合：对象的构建十分复杂、需要依赖具体环境创建不同实例、处理大量具有相同属性的小对象；
         *       2）主要解决了重复实例化的问题；
         *
+        * 5、Decorator 装饰者模式：
+        *       1）它是一种结构型设计模式，旨在促进代码复用；
+        *       2）该模式的基本思想是：向基本对象添加属性或方法，而不是进行子类化；
+        *       3）装饰者模式可以简单看做是不需要通过继承而是将其他对象的方法直接复制过来，这其实也是设计模式中很重要的原则：尽量多用组合代替继承，从而实现更为灵活的模块间组织关系；
+        * 注：设计模式这块儿单纯的看书总感觉理解不透彻，还是有必要结合一些案例，只有一些典型的框架或项目里边用到的，才是经典的，有必要去掌握的模式；
         * */
 
 
@@ -73,7 +81,211 @@
         var d2 = D();//typeof d2 == undefined , D()相当于在全局调用了D
 
 
-        //eg.3 工厂模式
+        //eg.3使用新功能装饰构造函数
+        function Car(type) {
+            
+            //默认值
+            this.type = type || "moto";
+            this.model = "default";
+            this.license = "000000";
+            
+        }
+        
+        //测试基本的Car实例
+        var testInstance = new Car("bicycle");
+        console.log("testInstance : ", testInstance);
+        
+        //创建一个car的实例并进行装饰
+        var truck = new Car("truck");
+        
+        //给truck装饰新的功能
+        truck.setModel = function (modelName) {
+            this.model = modelName;
+        };
+        
+        truck.setColor = function (color) {
+            this.color = color;
+        };
+        
+        //测试赋值操作是否能正常工作
+        truck.setModel("CAT");
+        truck.setColor("blue");
+        
+        console.log("truck : ", truck);
+        
+        //下边的代码，展示Car依然是不被改变的
+        var truck2 = new Car("car");
+        console.log("truck2 : ", truck2);
+        
+        
+        //使用多个装饰对象: 据此，我们差不多已经对装饰者有了比较清晰的认识，也即当我们想扩充某个对象的实例的属性或方法时，我们不在对象的原型上扩充，而是额外创建了一些构造函数，通过实例化这些构造函数来扩充属性或者方法，因此Macbook对象依然是不受到影响的，在这个充当扩充属性或方法的装饰者内部 ，我们先获取了要修改的属性或方法，然后对其进行扩充，再将其覆盖到被操作的对象上；
+        function MacBook() {
+            
+            this.cost = function() { return 1000 };
+            this.screenSize = function() { return 11.6 };
+        }
+        
+        //Decorator1
+        function Memory(macbook) {
+            
+            var v = macbook.cost();
+            macbook.cost = function () {
+                return v + 75;
+            };
+            
+        }
+        
+        //Decorator2
+        function Engraving(macbook) {
+            
+            var v = macbook.cost();
+            macbook.cost = function () {
+                return v + 200;
+            };
+            
+        }
+        
+        //Decorator3
+        function Insurance(macbook) {
+            
+            var v = macbook.cost();
+            macbook.cost = function () {
+                return v + 25;
+            };
+            
+        }
+        
+        var mac = new MacBook();
+        Memory(mac);
+        Engraving(mac);
+        Insurance(mac);
+        
+        console.log(mac.cost());
+        console.log(mac.screenSize());
+        
+        //接口，伪经典装饰者，该装饰模式的特殊变体是用于引用目的，但是的确比较复杂和难于理解，因此，我们可以跳过此部分。
+        function Interface(str, arr) {}
+        var reminder = new Interface("List", ["summary", "placeOrder"]);
+        
+        var propertise = {
+            name : "Remember to buy the milk",
+            date : "05/06/2017",
+            actions : {
+                summary : function () {
+                    return "Remember to but the milk, we...";
+                },
+                placeOrder : function () {
+                    return "Ordering some food from the store";
+                }
+            }
+        };
+        
+        //构建构造函数实现上述属性和方法
+        function Todo(config) {
+            //为了支持这些功能，接口实例需要检查这些功能
+            Interface.ensureImplements(config.actions, reminder);
+            this.name = config.name;
+            this.methods = config.actions;
+        }
+        
+        //构建TODO构造函数的新实例
+        var todoItem = Todo(propertise);
+        
+        //测试新属性是否可用
+//        console.log(todoItem.methods.summary());
+        
+        
+        /*
+        * 抽象装饰者 & 使用jQuery的装饰者
+        * 为实现对mac的一些升级功能，我们需要考虑不同的组合情况，因此我们可以创建五个新的装饰类，在这些增强类上调用的方法会被传递给Mackbook类
+        * */
+        var Macbook2 = new Interface("Macbook", [
+            "addEngraving",
+            "addParallels",
+            "add4GBRAM",
+            "ADD8GBRAM",
+            "addCase"
+        ]);
+        
+        var MackbookPro = function () {
+
+        };
+        
+        MacbookPro.prototype = {
+            addEngraving : function () {
+                
+            },
+            addParallels: function () {
+                
+            },
+            add4GBRAM : function () {
+                
+            },
+            add8GBRAM : function () {
+                
+            },
+            addCase : function () {
+                
+            },
+            addPrice : function () {
+                return 900.00;
+            }
+        };
+        
+        //Macbook装饰者抽象装饰者类
+        var MacbookDecorator = function (macbook) {
+            Interface.ensureImplements(macbook, Macbook);
+            this.macbook = macbook;
+        };
+        
+        MacbookDecorator.prototype = {
+            addEngraving: function () {
+                return this.macbook.addEngraving();
+            },
+            addParallels: function () {
+                return this.macbook.addParallels();
+            },
+            add4GBRAM: function () {
+                return this.macbook.add4GBRAM();
+            },
+            add8GBRAM: function () {
+                return this.macbook.add8GBRAM();
+            },
+            addCase: function () {
+                return this.macbook.addCase();
+            },
+            addPrice: function () {
+                return this.macbook.getPrice();
+            }
+        };
+        
+        var CaseDecorator = function (macbook) {
+            
+            //调用超类的构造函数
+            this.superclass.constructor(macbook);
+        };
+        
+        //扩展超类
+        ectend(CaseDecorator, MacbookDecorator);
+        
+        CaseDecorator.prototype.addCase = function () {
+            return this.macbook.addCase() + "Aadding case to macbook";
+        };
+        
+        CaseDecorator.prototype.getPrice = function () {
+            return this.macbook.getPrice() + 45.00;
+        };
+        
+        //实例化Macbook
+        var myMacbookPro = new MackbookPro();
+        //装饰Macbook
+        myMacbookPro = new CaseDecorator((myMacbookPro));
+        
+        
+        
+        
+        
+        
 
 
 
