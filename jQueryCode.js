@@ -16,6 +16,15 @@
     //传入undefined
     //undefined 在某些浏览器里边是会被修改的，为防止个别情况下undefined被修改，因此若传入该参数，库里边有用到undefined的地方就是直接找到该参数，这样从而确保了undefined是未被修改过的（未被传入的参数，自然就是undefined），而不是去外边查找值不确定的undefined，但在新版本的浏览器中已经不能修改undefined值了；
 
+    // "use strict";
+    // 需明确严格模式和非严格模式的具体区别，以及在各个场合如何去解析模式
+    //1、不使用var去声明变量会报错；
+    //2、arguments.callee在严格模式下不能使用；
+    //3、初始化一个变量为八进制形式会报错；
+    //TODO
+
+    //判断某值是否为undefined，不要简单的 val == undefined,这样可能会存在一些判断不了的情况，建议使用 typeof val == "undefined"
+
     //1、定义变量和函数
     var jQuery = function() {};
 
