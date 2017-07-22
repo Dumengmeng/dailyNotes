@@ -25,8 +25,13 @@
 
     //判断某值是否为undefined，不要简单的 val == undefined,这样可能会存在一些判断不了的情况，建议使用 typeof val == "undefined"
 
-    //1、定义变量和函数
-    var jQuery = function() {};
+    //1、定义变量和函数  ,  这样存储，有利于压缩
+    var jQuery = function() {},
+        location = window.location,
+        docElement = document.documentElement,
+        //预防冲突
+        _jQuery = window.jQuery,
+        _$ = window.$;
 
     //2、往jQuery原型上添加方法
     jQuery.fn = jQuery.prototype = {};
@@ -77,5 +82,23 @@
     if (typeof win === "object" && typeof win.document === "object") {
         win.jQuery = win.$ = jQuery;
     }
+
+
+    /*
+    * summary :
+    *
+    *
+    *
+    * */
+    //jQuery基本面向对象
+    function jQquery() {
+        return new jQuery.prototype.init();
+    }
+    jQuery.prototype.init = function () {
+    };
+    jQuery.prototype.fun = function () {
+    };
+    jQuery().fun();
+
 
 })(window);
