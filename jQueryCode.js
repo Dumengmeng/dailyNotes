@@ -36,6 +36,9 @@
     //2、往jQuery原型上添加方法
     jQuery.fn = jQuery.prototype = {};
 
+        // init() 方法，使用标签 id 类名等创建或获取标签；
+        //$.merge()
+
     //3、jQuery的继承方法，后续添加的方法可以挂载到jQuery对象上，方方便后期的维护和扩展
     jQuery.extend = jQuery.fn.extend = function () {};
 
