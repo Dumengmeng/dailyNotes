@@ -38,6 +38,10 @@
 
         // init() 方法，使用标签 id 类名等创建或获取标签；
         //$.merge()
+        //$(document).find()
+        // $(function(){})  ==> $(document).ready(function(){})
+        //$.makeArray() ==> 将类数组转换为数组
+        //$("div").get() 转原声集合
 
     //3、jQuery的继承方法，后续添加的方法可以挂载到jQuery对象上，方方便后期的维护和扩展
     jQuery.extend = jQuery.fn.extend = function () {};
