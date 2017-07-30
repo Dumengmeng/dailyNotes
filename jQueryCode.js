@@ -43,6 +43,7 @@
         //$.makeArray() ==> 将类数组转换为数组
         //$("div").get() 转原声集合
 
+
     //3、jQuery的继承方法，后续添加的方法可以挂载到jQuery对象上，方方便后期的维护和扩展
     jQuery.extend = jQuery.fn.extend = function () {};
 
@@ -92,9 +93,7 @@
 
 
     /*
-    * summary :
-    *
-    *
+    * summary
     *
     * */
     //jQuery基本面向对象
@@ -106,6 +105,50 @@
     jQuery.prototype.fun = function () {
     };
     jQuery().fun();
+
+    /*
+    * jQuery hook:
+    *
+    * https://blog.rodneyrehm.de/archives/11-jQuery-Hooks.html
+    * */
+    var someHook = {
+        get : function (elem) {
+            return "some value";
+        },
+        set : function (elem, value) {
+            //将elem的一些属性值设置为value
+        }
+    };
+
+    //假设我们有这样的一个H5标签<detail>，我们可以通过设置它的 open 属性为true或者false，来控制该元素的打开或者关闭状态
+    $.propHooks.open = {
+        get: function(elem) {
+            if (elem.nodeName.toLowerCase() !== 'details') {
+                return undefined;
+            }
+            //以 boolean值返回open-state的状态
+            return !!$(elem).details('is-open');
+        },
+        set: function(elem, value) {
+            if (elem.nodeName.toLowerCase() !== 'details') {
+                return undefined;
+            }
+            // 将value转换为boolean值，并将其赋给该元素
+            return $(elem).details(!!value);
+        }
+    };
+
+    $.attrHooks.open = {
+        get: function(elem) {
+            if (elem.nodeName.toLowerCase() !== 'details') {
+                return undefined;
+            }
+            //将判断属性值的boolean值，从而返回对应的字符串
+            return $(elem).details('is-open') ? 'open' : '';
+        },
+        set: $.propHooks.open.set;
+    };
+
 
 
 })(window);
