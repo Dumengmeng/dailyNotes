@@ -119,22 +119,28 @@
      * jQuery里用到hook的方法 ：
      *  .attr(), .prop(), .val() ，.css()
      * https://blog.rodneyrehm.de/archives/11-jQuery-Hooks.html
+     *
+     * 下例实现了一个方法，可以添加自定义的钩子，并执行挂载在该钩子上的方法
      * */
     var Hook = function() {
-        //声明一个最外层的数组
+        //声明一个存放钩子的数组
         this.queue = {};
     };
 
     //添加钩子
     Hook.prototype.addAction = function(hook, fun1) {
         var that = this;
-        //声明存放对应该钩子下的函数的数组
-        that.queue[hook] = [];
+        //若该hook不存在对应的数组 则创建存放对应该钩子下的函数的数组
+        !that.queue[hook] && (that.queue[hook] = []);
+
         if (typeof fun1 === "function") {
+            //存放类型为函数
             that.queue[hook].push(fun1);
         } else if (typeof fun1 === "string") {
+            //存放类型为字符串
             window[fun1] && that.queue[hook].push(window[fun1]);
         } else if ({}.toString.call(fun1) === "[object Array]") {
+            //存放类型为数组
             fun1.forEach(function(item) {
                 if (typeof item === "function") {
                     that.queue[hook].push(item);
@@ -146,58 +152,55 @@
     };
 
     //执行函数栈
-    Hook.prototype.call_fun = function(hookName, param) {
-        var func;
-        if (typeof hookName === "string") {
-            console.log(1)
-            //若存储的对象为字符串
-            func = (typeof this[hookName] === "function") ? this[hookName] : func =  (new Function(null, "return " + hookName))();
-        } else if (hookName instanceof Array) {
-            console.log(2)
-            //若存储的为数组
-            func = ( typeof hookName[0] == 'string' ) ? eval(hookName[0]+"['"+hookName[1]+"']") : func = hookName[0][hookName[1]];
-        } else if (typeof hookName === "function") {
-            console.log(3)
-            func = hookName;
-        }
+    Hook.prototype.call_fun = function(hookName, paramObj) {
+        var func = hookName;
         //若最终的对象不是函数
-        // if (typeof func !== "function") {
-        //     throw new Error(hookName + " is not a function");
-        // }
-        // //参数为空
-        // if (typeof param === "undefined") {
-        //     var paramArr = [];
-        // }
-        func.apply();
-        //console.log("hookName : ", hookName)
-        //return (typeof hookName[0] === 'string') ? func.apply(eval(hookName[0]), paramArr) :
-        //    ( typeof hookName[0] !== 'object' ) ? func.apply(null, paramArr) : func.apply(hookName[0], paramArr);
+        if (typeof func !== "function") {
+            throw new Error(hookName + " isn't a function");
+        }
+        //参数对象为空
+        if (typeof paramObj === "undefined") {
+            func.apply();
+        } else {
+            console.log(paramObj)
+            func.apply(null, paramObj)
+        }
     };
 
-
     //执行钩子
-    Hook.prototype.doAction = function(hook) {
+    Hook.prototype.doAction = function(hook, param) {
         //获取第一个参数之后的参数
         var that = this;
-        var params = [].slice.call(arguments, 1);
+        var paramObj = (param && Object.getOwnPropertyNames(param).length > 0) ? param : undefined;
         var funs = that.queue[hook];
         if (Array.isArray(funs) && funs.length > 0) {
             funs.forEach(function (item) {
-                that.call_fun(item, params);
+                //函数栈里每一个函数的名字, 参数可能为空
+                that.call_fun(item, paramObj[item.name]);
             })
         }
-        //return true;
     };
 
-    var fun1 = function() {console.log("fun1 for hook ")};
+    var fun1 = function(num) {console.log("fun1 for hook  ------",  num)};
     var fun2 = function() {console.log("fun2 for hook")};
-    var fun3 = function() {console.log("fun3 for hook")};
+    var fun3 = function(name, age) {console.log("fun3 for hook  name : " + name + " age : " + age )};
     var fun4 = function() {console.log("fun4 for hook")};
+    //参数的格式为数组对象
+    var paramObj = {
+        fun1 : [
+            123
+        ],
+        fun3 : [
+            "Lily",
+            30
+        ]
+    }
     var hook = new Hook();
-    // hook.addAction("hook1", fun1);
-    // hook.addAction("hook1", "fun2");
+    hook.addAction("hook1", fun1);
+    hook.addAction("hook1", "fun2");
     hook.addAction("hook1", [fun3, fun4]);
-    hook.doAction("hook1");
+    hook.doAction("hook1", paramObj);
+
 
 
 })(window);
