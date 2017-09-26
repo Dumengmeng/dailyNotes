@@ -51,6 +51,26 @@
                 obj2.fn()
             }, 100) // obj
 
+
+            function fun() {
+                return (a) => {
+                    console.log(this.a)
+                }
+            }
+
+            var objE1 = {
+                a : 1
+            }
+
+            var objE2 = {
+                a : 2
+            }
+
+            // 箭头函数的绑定无法被修改，因此常用语回调函数或定时器
+            var bar = fun.call(objE1)
+            bar.call(objE2) // 1
+
+
         </script>
     </body>
 </html>
