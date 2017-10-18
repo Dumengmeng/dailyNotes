@@ -9,6 +9,7 @@
 * */
 
 (function (win, undefined) {
+
     //传入参数window：
     // 1、查找速度：window是最顶级的对象，查找起来会比较慢，根据就近原则，若传入window，则在使用的时候直接用这个参数window这个局部变量，而不是去查找最外层的全局变量window对象，提高了效率；
     //2、压缩：若不传入window,压缩的时候不会使用别名代替,若传入的话，则可以使用任何别名代替，这在压缩的时候很有用；
@@ -26,22 +27,23 @@
     //判断某值是否为undefined，不要简单的 val == undefined,这样可能会存在一些判断不了的情况，建议使用 typeof val == "undefined"
 
     //1、定义变量和函数  ,  这样存储，有利于压缩
+    //同时 原型链上的方法注意变量保存，避免开销
     var jQuery = function() {},
         location = window.location,
         docElement = document.documentElement,
-        //预防冲突
+    //预防冲突
         _jQuery = window.jQuery,
         _$ = window.$;
 
     //2、往jQuery原型上添加方法
     jQuery.fn = jQuery.prototype = {};
 
-        // init() 方法，使用标签 id 类名等创建或获取标签；
-        //$.merge()
-        //$(document).find()
-        // $(function(){})  ==> $(document).ready(function(){})
-        //$.makeArray() ==> 将类数组转换为数组
-        //$("div").get() 转原声集合
+    // init() 方法，使用标签 id 类名等创建或获取标签；
+    //$.merge()
+    //$(document).find()
+    // $(function(){})  ==> $(document).ready(function(){})
+    //$.makeArray() ==> 将类数组转换为数组
+    //$("div").get() 转原声集合
 
 
     //3、jQuery的继承方法，后续添加的方法可以挂载到jQuery对象上，方方便后期的维护和扩展
@@ -93,10 +95,13 @@
 
 
     /*
-    * summary
-    *
+     * summary
+     *
+     * */
+
+    /*
+    * jQuery基本面向对象
     * */
-    //jQuery基本面向对象
     function jQquery() {
         return new jQuery.prototype.init();
     }
@@ -106,49 +111,120 @@
     };
     jQuery().fun();
 
+
     /*
-    * jQuery hook:
-    *
-    * https://blog.rodneyrehm.de/archives/11-jQuery-Hooks.html
-    * */
-    var someHook = {
-        get : function (elem) {
-            return "some value";
-        },
-        set : function (elem, value) {
-            //将elem的一些属性值设置为value
+     * jQuery hook:
+     * 钩子也即方法，使用钩子将所有 触发条件一致 的 事件 绑定到同一战线上，达到“同生共死”；
+     * 钩子的没有统一的模式定义，在我看来，它只是一种对于JS代码解耦写法的方式的一种形象比喻；
+     * jQuery里用到hook的方法 ：
+     *  .attr(), .prop(), .val() ，.css()
+     * https://blog.rodneyrehm.de/archives/11-jQuery-Hooks.html
+     *
+     * 下例实现了一个方法，可以添加自定义的钩子，并执行挂载在该钩子上的方法
+     * */
+    var Hook = function() {
+        //声明一个存放钩子的数组
+        this.queue = {};
+    };
+
+    //添加钩子
+    Hook.prototype.addAction = function(hook, fun1) {
+        var that = this;
+        //若该hook不存在对应的数组 则创建存放对应该钩子下的函数的数组
+        !that.queue[hook] && (that.queue[hook] = []);
+
+        if (typeof fun1 === "function") {
+            //存放类型为函数
+            that.queue[hook].push(fun1);
+        } else if (typeof fun1 === "string") {
+            //存放类型为字符串
+            window[fun1] && that.queue[hook].push(window[fun1]);
+        } else if ({}.toString.call(fun1) === "[object Array]") {
+            //存放类型为数组
+            fun1.forEach(function(item) {
+                if (typeof item === "function") {
+                    that.queue[hook].push(item);
+                } else if (typeof item === "string") {
+                    window[item] && that.queue[hook].push(window[item]);
+                }
+            })
         }
     };
 
-    //假设我们有这样的一个H5标签<detail>，我们可以通过设置它的 open 属性为true或者false，来控制该元素的打开或者关闭状态
-    $.propHooks.open = {
-        get: function(elem) {
-            if (elem.nodeName.toLowerCase() !== 'details') {
-                return undefined;
-            }
-            //以 boolean值返回open-state的状态
-            return !!$(elem).details('is-open');
-        },
-        set: function(elem, value) {
-            if (elem.nodeName.toLowerCase() !== 'details') {
-                return undefined;
-            }
-            // 将value转换为boolean值，并将其赋给该元素
-            return $(elem).details(!!value);
+    //执行函数栈
+    Hook.prototype.call_fun = function(hookName, paramObj) {
+        var func = hookName;
+        //若最终的对象不是函数
+        if (typeof func !== "function") {
+            throw new Error(hookName + " isn't a function");
+        }
+        //参数对象为空
+        if (typeof paramObj === "undefined") {
+            func.apply();
+        } else {
+            console.log(paramObj)
+            func.apply(null, paramObj)
         }
     };
 
-    $.attrHooks.open = {
-        get: function(elem) {
-            if (elem.nodeName.toLowerCase() !== 'details') {
-                return undefined;
-            }
-            //将判断属性值的boolean值，从而返回对应的字符串
-            return $(elem).details('is-open') ? 'open' : '';
-        },
-        set: $.propHooks.open.set;
+    //执行钩子
+    Hook.prototype.doAction = function(hook, param) {
+        //获取第一个参数之后的参数
+        var that = this;
+        var paramObj = (param && Object.getOwnPropertyNames(param).length > 0) ? param : undefined;
+        var funs = that.queue[hook];
+        if (Array.isArray(funs) && funs.length > 0) {
+            funs.forEach(function (item) {
+                //函数栈里每一个函数的名字, 参数可能为空
+                that.call_fun(item, paramObj[item.name]);
+            })
+        }
     };
+
+    var fun1 = function(num) {console.log("fun1 for hook  ------",  num)};
+    var fun2 = function() {console.log("fun2 for hook")};
+    var fun3 = function(name, age) {console.log("fun3 for hook  name : " + name + " age : " + age )};
+    var fun4 = function() {console.log("fun4 for hook")};
+    //参数的格式为数组对象
+    var paramObj = {
+        fun1 : [
+            123
+        ],
+        fun3 : [
+            "Lily",
+            30
+        ]
+    }
+    var hook = new Hook();
+    hook.addAction("hook1", fun1);
+    hook.addAction("hook1", "fun2");
+    hook.addAction("hook1", [fun3, fun4]);
+    hook.doAction("hook1", paramObj);
 
 
 
 })(window);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
