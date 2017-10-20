@@ -19,7 +19,7 @@
 			display: flex;
 			/*flex-direction: column-reverse;*/ /* 会导致justify-content 失效 */
 			justify-content: flex-start; /* flex items在水平线上以起始线为基准 */
-			justify-content: flex-start; /* flex items在水平线上以结束线会基准 */
+			justify-content: flex-end; /* flex items在水平线上以结束线会基准 */
 			justify-content: space-between; /* 第一个元素在起始线，最后一个元素在结束线 */
 			justify-content: space-around; /* 等边距分布 */
 			justify-content: space-evenly; /* 等间距分布 */
@@ -113,6 +113,54 @@
 			/* flex-shrink: 1; */ /* 为项目的缩小比例，负值无效 */
 			/* flex-basis: 100px */ /* 固定item的宽度 */
 		}
+		.wrap1{
+			display: flex;
+			/* flex-direction: row-reverse; */
+			align-items: flex-start;
+			background-color: floralwhite;
+			padding: 1em;
+		}
+		.wrap1 img{
+			flex: 0 1 100px;
+			height: 80px;
+			margin-right: 1em;
+		}
+		.wrap1 p{
+			margin: 0;
+		}
+		.wrap2, .wrap3, .wrap4{
+			display: flex;
+			line-height: 30px;
+			border: 1px solid #ccc;
+			background-color: #333;
+		}
+		.wrap2 span, .wrap3 span, .wrap4 span{
+			flex: 0 1 60px;
+			color: gray;
+			text-align: center;
+		}
+		.wrap3{
+			position: relative;
+		}
+		.wrap2 input, .wrap3 input, .wrap4 input{
+			flex: 1;
+		}
+		input{
+			border: 0;
+			background-color: grey;
+			color: #fff;
+		}
+		.wrap3 i{
+			position: absolute;
+			right: 10px;
+			top: 50%;
+			transform: translateY(-50%);
+			-webkit-transform: translateY(-50%);
+			width: 12px;
+			height: 12px;
+			border-radius: 50%;
+			border: 1px solid #fff;
+		}
 	</style>
 </head>
 <body>
@@ -156,6 +204,31 @@
 		<p>para2</p>
 		<p class="vip">order : 1</p>
 		<p>para4</p>
+	</div>
+
+	<div class="box6">
+		<h4>图文布局</h4>
+		<div class="wrap1">
+			<img src="https://pics.lvjs.com.cn//uploads/pc/place2/2017-03-15/22d09ab3-b138-49bb-b41d-2fa29c5b8cb6_480_320.jpg" alt="">
+			<p>Javascript 语言的执行环境是“单线程”（single thread）。所谓“单线程”，就是指一次只能完成一件任务。如果有多个任务，就必须排队，前面一个任务完成，再执行后面一个任务。</p>
+		</div>
+	</div>
+
+	<div class="box7">
+		<h4>输入框布局</h4>
+		<div class="wrap2">
+			<span>Name</span>		
+			<input type="text" placeholder="please input your name">
+		</div>
+		<div class="wrap3">
+			<span>Email</span>
+			<input type="text" placeholder="please input your email">
+			<i></i>
+		</div>
+		<div class="wrap4">
+			<input type="text" placeholder="please input your password">
+			<span>GO</span>
+		</div>
 	</div>
 
 </body>
