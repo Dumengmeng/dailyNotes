@@ -98,12 +98,28 @@
 				flex: 1 auto;
 			}
 		}
+		/* 之前对flex item的属性理解的不是很透彻，故又增添一版案例，细说常用的几个属性 */
+		.box5{
+			display: flex;
+		}
+		.box5 p{
+			margin: 10px;
+			flex-grow: 1;
+			background-color: deepskyblue;
+		}
+		.box5 .vip{
+			order: -1; /* order定义item的排列顺序，默认为0，因此-1会放在0的前边 */
+			flex-grow: 2; /* 定义项目的放大比例 */
+			/* flex-shrink: 1; */ /* 为项目的缩小比例，负值无效 */
+			/* flex-basis: 100px */ /* 固定item的宽度 */
+		}
 	</style>
 </head>
 <body>
 
 	<p>
 		最近在开发页面的时候接触到了一个新的属性，感觉用起来极为方便，省却颇多代码与烦恼，比如定位以及布局，flex都可以让我们的CSS更为简便灵活，故今日做一总结。
+		<!-- 阮一峰关于Flex语法的详细讲解：http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html -->
 	</p>
 
 	<ul class="box1">
@@ -133,6 +149,13 @@
 		<span class="aside aside1">aside1</span>
 		<span class="aside aside2">aside2</span>
 		<span class="footer">footer</span>
+	</div>
+
+	<div class="box5">
+		<p>para1</p>
+		<p>para2</p>
+		<p class="vip">order : 1</p>
+		<p>para4</p>
 	</div>
 
 </body>
