@@ -1,0 +1,40 @@
+<script>
+    /*
+     * crypto-js 3DES算法加密解密
+     * 1、默认加密出来的数据为base64，解析时默认传入的为base64数据
+     * 2、
+     *  */
+
+    import CryptoJS from 'crypto-js'
+
+    var str = 'storeId=11&orderId=22222';
+    var key = 'E847015740B76C7F28BEAA1E';
+    key = CryptoJS.enc.Utf8.parse(key)
+
+    // Triple DES 加密
+    var encrypted = CryptoJS.TripleDES.encrypt(str, key, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+    });
+
+    console.log(CryptoJS.enc.Hex.stringify(encrypted.ciphertext).toString()) // a6a1fb64b53438082806389c76141827a52faba593083a88bde3df8b9bc89be4
+    console.log('encrypted:', encrypted.toString()) // pqH7ZLU0OAgoBjicdhQYJ6Uvq6WTCDqIvePfi5vIm+Q=
+
+
+    // Triple DES 解密
+    const a = CryptoJS.TripleDES.decrypt('pqH7ZLU0OAgoBjicdhQYJ6Uvq6WTCDqIvePfi5vIm+Q=', CryptoJS.enc.Utf8.parse('E847015740B76C7F28BEAA1E'), {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7}
+      ).toString(CryptoJS.enc.Utf8)
+
+    const b = CryptoJS.TripleDES.decrypt({ciphertext: CryptoJS.enc.Base64.parse('pqH7ZLU0OAgoBjicdhQYJ6Uvq6WTCDqIvePfi5vIm+Q=')}, CryptoJS.enc.Utf8.parse('E847015740B76C7F28BEAA1E'), {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7}
+      ).toString(CryptoJS.enc.Utf8)
+
+    const b = CryptoJS.TripleDES.decrypt({ciphertext: CryptoJS.enc.Hex.parse('a6a1fb64b53438082806389c76141827a52faba593083a88bde3df8b9bc89be4')}, CryptoJS.enc.Utf8.parse('E847015740B76C7F28BEAA1E'), {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7}
+      ).toString(CryptoJS.enc.Utf8)
+     
+</script>
