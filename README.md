@@ -7,5 +7,6 @@ git flow feature start test
 git flow feature finish test
 git flow release start
 git flow release end
-
+git flow hotfix start 
+git flow hotfix end 
 
