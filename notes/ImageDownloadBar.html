@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Img Download</title>
+    <meta content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" name="viewport">
+    <style type="text/css">
+        img{
+            width: 100%;
+            height: 100%;
+        }
+        .wrap{
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+        .loadwrap{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -webkit-transform: translate(-50%, -50%);
+            width: 100%;
+            height: 10px;
+            border: 1px solid #333;
+            z-index: -1;
+        }
+        .loadbar{
+            position: absolute;
+            width: 30%;
+            height: 10px;
+            background-color: #333;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="loadwrap">
+            <span class="loadbar"></span>
+        </div>
+        <img data-imgurl="https://pics.lvjs.com.cn/uploads/pc/place2/20140311124156_795049845_720_540.jpg">
+    </div>
+
+    <script type="text/javascript">
+        /*
+         * @desc 重写Image的load方法
+         * @param {url} 图片的路径
+         * @param {callback} 下载过程中的回调方法
+         */
+        Image.prototype.load = function(url, callback) {
+            let _that = this;
+            let xhr = new XMLHttpRequest();
+            xhr.open("get", url, true);
+            xhr.responseType = 'arraybuffer';
+            // 此处不能用ES6语法
+            xhr.onload = function() {
+                // 一个Blob对象就是一个包含有只读原始数据的类文件对象。Blob对象中的数据并不一定得是JavaScript中的原生形式。File接口基于Blob，继承了Blob的功能,并且扩展支持了用户计算机上的本地文件。
+                let blob = new Blob([this.response]);
+                // createObjectURL 方法从 blob 读取并创建一个新的 URL 对象
+                _that.src = window.URL.createObjectURL(blob);
+            };
+            xhr.onprogress = (e) => {
+                _that.completedPercentage = parseInt((e.loaded / e.total) * 100);
+                callback && callback();
+            };
+            xhr.onloadstart = () => {
+                _that.completedPercentage = 0;
+            };
+            xhr.send();
+        }
+        Image.prototype.completedPercentage = 0;
+        /*
+         * @desc 下载img图片
+         *       img元素，一旦赋值src属性，便会立即进行下载，外链的script元素，则需要src属性后，该script标签添加到dom文档之后才能加载
+         */
+        function loadImg() {
+            // 获取图片路径
+            const img = document.images[0];
+            const imgUrl = img.dataset.imgurl;
+            // 下载条
+            const downloadbar = document.querySelector('.loadbar');
+            img.load(imgUrl, () => {
+                downloadbar.style.width = img.completedPercentage + "%";
+            });
+            img.onload = () => {
+                console.log("done");
+            }
+            img.error = () => {
+                console.log("error");
+            }
+        }
+        
+        loadImg();
+    </script>
+</body>
+
+</html>
