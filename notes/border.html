@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Border</title>
+    <style>
+        div {
+            margin-bottom: 10px;
+            width: 100%;
+            height: 100px;
+            border: 1px solid #ddd;
+        }
+        
+        div p {
+            position: relative;
+            margin: 0 10px;
+            padding: 10px 0;
+        }
+        
+        div p:last-child {
+            margin-top: 10px;
+            padding: 6px;
+            color: #333;
+            font-size: 12px;
+        }
+        
+        .box1 p:first-child:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            border-bottom: 1px solid red;
+            transform: scaleY(.5);
+            -webkit-transform: scaleY(.5);
+        }
+        
+        .box1 p:last-child:after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200%;
+            height: 200%;
+            border: 1px solid red;
+            border-radius: 4px;
+            transform: translate(-50%, -50%) scale(.5, .5);
+            -webkit-transform: translate(-50%, -50%) scale(.5, .5);
+        }
+        
+        .box2 p:first-child {
+            background-image: linear-gradient(180deg, blue, blue 50%, transparent 50%);
+            background-size: 100% 1px;
+            background-repeat: no-repeat;
+            background-position: bottom;
+        }
+        
+        .box2 p:last-child {
+            background-image: linear-gradient(90deg, blue, blue 50%, transparent 50%);
+            background-size: 1px 100%;
+            background-repeat: no-repeat;
+            background-position: right;
+        }
+        
+        .box3 p:first-child {
+            border-width: 0 0 1px 0;
+            border-image: url(data:image/gif;base64,R0lGODlhBQAFAPABANra2v///yH5BAUHAAEALAAAAAAFAAUAAAIHhB9pGatnCgA7) 2 stretch;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box1">
+        <p>1、使用scale实现1px border</p>
+        <p>可实现圆角</p>
+    </div>
+    <div class="box2">
+        <p>2、使用背景渐变实现1px border</p>
+        <p>无法实现圆角</p>
+    </div>
+    <div class="box3">
+        <p>3、使用图片实现1px border</p>
+        <p>无法实现圆角</p>
+    </div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "daily-notes",
+  "version": "1.0.0",
+  "description": "note some notes of examples",
+  "main": "callbacks.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dumengmeng/dailyNotes.git"
+  },
+  "author": "dmm",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dumengmeng/dailyNotes/issues"
+  },
+  "homepage": "https://github.com/Dumengmeng/dailyNotes#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-connect": "^5.2.0"
+  }
+}

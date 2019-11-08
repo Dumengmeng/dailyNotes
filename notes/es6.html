@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ES6</title>
+</head>
+
+<body>
+
+
+    <script type="text/javascript">
+        /* 
+         * 一、编程习惯：
+         * 
+         */
+
+        // 1、所有的函数都应该用const设置为常量；
+        const getNumber = (...numbers) => numbers.sort();
+
+        // 2、静态字符串都应该使用单引号；
+        const name1 = 'Judy';
+        const name2 = `{firstName} Judy`;
+
+        // 3、使用数组或对象对变量赋值时，优先使用解构赋值
+        const numArr = [1, 2, 3];
+        const [first, second] = numArr;
+        // 3.2
+        const fullName = ({
+            firstName,
+            secondName
+        }) => {
+            return firstName + " " + secondName
+        };
+        // 3.3
+        const processInput = (input) => {
+            return {
+                left,
+                top,
+                buttom,
+                right
+            }
+        };
+        // const {
+        //     left,
+        //     right
+        // } = processInput(input);
+
+        // 4、对象尽量静态化，不能随意增减属性
+        const listObj = {
+            x: null
+        }
+        listObj.x = 12;
+        // 4.2 对象的属性和方法尽量使用简介表达法
+        const greeting = 'wellbeing';
+        const greetObj = {
+            greeting,
+            value: 1,
+            addValue(val) {
+                return val.name + val.age;
+            }
+        }
+
+        // 5、使用扩展运算符拷贝数组
+        const arrCopy = [...nameArr];
+        // 5.2 使用Array.from()将类数组对象转换为数组
+
+        // 6、在函数体内不建议使用arguments对象
+        const makeArr = (...argu) => {
+            return argu.join("")
+        };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>onerror</title>
+    <meta name="viewport" content="width=device-width">
+</head>
+<body>
+    
+    <div class="h1" style="position: absolute;z-index: 100;background-color: antiquewhite">
+        <h3 style="z-index: 30;">onerror event</h3>
+    </div>
+    <div class="h2" style="position: absolute;z-index: 120;background-color: darkorange">
+        <h3 style="z-index: 20;">error 22222</h3>
+    </div>
+    <button id="btn1">remove</button>
+    <button id="btn2">modify</button>
+    <button id="btn3">change attribute</button>
+    <p>
+        今天我所负责项目的一个页面在某个机型上出现了个兼容问题，代码已经是趋于稳定的节奏忽然又出现这个问题，并且还是特定机型能复现，难免感觉有点奇葩，但问题是app内嵌页面在手机上的调试，因为m站均无问题，就导致一些后台报错无法直观的在手机上看到，这样情况下的调试难免有点盲人摸象的感觉。
+        要捕获页面的错误，首先想到的肯定是try-catch，虽然问题还没有得到解决，但是感觉这个技能还是有必要掌握一下的，同时也发现要系统的学习下JS的报错机制以及报错类型和常见错误对应的处理方式的必要性。
+    </p>
+
+    <script>
+        
+        /*
+        *   全局一旦有js脚本报错，便会触发onerror事件
+        *
+        *   1、若处理函数返回true，则浏览器不会弹出错误信息框，否则，浏览器会会弹出错误信息；
+        *   2、只有运行错误才会出发onerror，语法错误不会触发（具体JS错误类型，会下一次具体描述）；
+        *       具体是以下几种：
+        *           运行时错误（runtime error），例如无效的对象引用或安全限制或主动抛出的错误
+                    下载错误（fail error），如图片
+                    在IE9中，获取多媒体数据失败也会引发
+                    或者代码存在语法错误，导致编译不通过时也会引发
+            3、当执行的js脚本存在跨域情况时，给返回头部添加Access-Control-Allow-Origin: *属性，给js标签添加crossorigin 属性
+            
+        *   参考链接：https://blog.sentry.io/2016/01/04/client-javascript-reporting-window-onerror.html
+        *            https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onerror
+        * */
+        
+        window.onerror = function (msg, url, lineNo, columnNo, error) {
+            var string = msg.toLowerCase();
+            var substring = "script error";
+            if (string.indexOf(substring) > -1){
+                alert('Script Error: See Browser Console for Detail');
+            } else {
+                var message = [
+                    'Message: ' + msg,
+                    'URL: ' + url,
+                    'Line: ' + lineNo,
+                    'Column: ' + columnNo,
+                    'Error object: ' + JSON.stringify(error)
+                ].join(' - ');
+
+                alert(message);
+            }
+
+            var suppressErrorAlert = false;
+//            suppressErrorAlert = true;
+
+            return suppressErrorAlert;
+        };
+        
+        var pElem = document.getElementsByTagName("p")[0];
+        var showInfo = function () {
+            call_undefined_fun();
+        };
+//        pElem.addEventListener("click", showInfo);
+        
+        
+        /*
+        * JS错误处理机制知识点总结：
+        *
+        *   1、Error对象
+        *    JS解析或执行时，一旦发生错误，就会抛出错误对象，所有的对象都是Error的实例，每个实例都具有三个属性：
+        *       message：错误信息，也即传给Error("info")对象的参数"info"；
+        *       name：错误名字，默认为"Error"，它是一个可写的属性；
+        *       stack： 错误的堆栈，由最底层到最外层地存放错误的堆栈信息，据此我们可以知道错误是如何一级一级传递的以及错误的源头；
+        *   2、JS的错误类型
+        *   除了Error这种错误类型，JS还派生除了其他六种错误类型（最常见的为前三种）：
+        *       SyntacError：解析代码时发生的语法错误；
+        *       ReferanceError：引用一个不存在的变量时发生的错误；
+        *       TypeError： 变量或参数不是预期类型；
+        *       RangeError：变量值超出了有效范围；
+         *      URIError：URI相关的函数参数不正确时抛出的错误；
+        *       EvalError：eval函数没有被正确执行；
+        *   3、throw语句 中断语句的执行，我们可以用其来抛出一个异常，参数可以为各种类型的值，可以是一个Error对象，或自定义的错误对象；
+        *   4、try-catch、try-catch-finally语句，用法与其他面向对象的语言比较类似；
+        * */
+        
+        
+        function assertion(expression, msg) {
+            if (!expression) {
+                throw {name : "Assertion Exception", message : msg}
+            }
+        }
+        
+//        assertion(typeof param === "i am param", "param is not defined~");
+        
+        //上述方法等同于：
+//        console.assert(typeof param === "i am param", "param is not defined~");
+        
+        
+        /*
+        * 常用JS调试技巧（主要是开发中多总结，掉的坑多了，就知道该怎么绕过去或者怎么填坑）：
+        *       1、console、alert方法；
+        *       2、断点调试，充分利用chrome浏览器提供的断点调试功能，无需添加冗余代码，即可观察代码的执行及变化，除了这一种方式，我们也
+        *           可以在代码中添加一行代码：debugger 语句，当代码执行到这一句时，会自动断点，这种方式主要为我们调试异步加载的代码提                    供了方便；
+        *       3、DOM断点：相当于时 DOM->JS 的调试；
+        *       4、根据事件名称、类型进行调试；
+        * */
+        var p_ele = document.getElementsByTagName("h3")[0];
+        var remove_btn = document.getElementById("btn1");
+        var modify_btn = document.getElementById("btn2");
+        var attri_btn = document.getElementById("btn3");
+        var removeEle = function () {
+            p_ele.remove();
+        };
+        var modifyEle = function () {
+            p_ele.innerHTML = "Error Event";
+        };
+        var attributeEle = function () {
+            p_ele.style.backgroundColor = "#aaa";
+//            p_ele.className = "add"
+        };
+        
+        //DOM断点必须添加给被监控元素的父元素上，在该父元素上右键Break on -> subtree modifications，并且调试时chrome调试窗口需停留在        Elements选项卡上
+        //该断点类型可监控元素的增加、删除修改操作，属性和内容修改不会触发断点，再次右键选择该选项则可取消断点；
+        remove_btn.addEventListener("click", removeEle);
+        
+        //subtree modifications 断点还可检测文本的改变，因为修改innerHTML的操作，是先删除了h3的子文本元素，再添加了新的子文本类型元        素，也是相当于对子元素做了增删的修改，因此可以被检测到；
+        modify_btn.addEventListener("click", modifyEle);
+        
+        //在该元素上右键Break on -> attribute modifications 可检测元素的属性修改，需要注意的是这个断点需要加在被检测的元素自己身上；
+        attri_btn.addEventListener("click", attributeEle);
+        
+        //Event Listener Breakpoints则可以允许我们针对鼠标、键盘、定时器等一系列操作进行检测，极大地方便了我们的代码调试
+        
+        
+        /*
+        * 结束语：
+        *       关于Error以及JS调试，上边总结和学习的几点有些确实是工作中用的比较多的，今天也总算把在oppo手机上的几个兼容文件修复完成，
+        *   解决兼容问题的过程其实就是调试JS代码的过程，其实JS的调试大体上有几条思路，只要我们沿着这几天思路去探索，问题自然水落石出，          *   就像侦探面对悬疑事件，一切其实都是有章可循的。
+        *
+        *   今天解决的四个兼容问题：
+        *   1、调用一个element元素的remove方法时报错，原因是 remove() 方法已经被添加到 2011 ( 提交 )的DOM live标准中，并由
+        *       Chrome，Firefox，Safari和 Opera 实现。 但是，在今天，IE有些版本仍然存在不支持的情况。因此，需要先判断浏览器是否
+        *       支持remove()方法，否则的话，我们最好还是在其父元素上调用removeChild()为妥，一般这样的错误情况比较好处理，难在错误
+        *       的定位，首先我们可以考虑全局检测onerror事件，其次用try-catch缩小范围去捕获；
+        *   2、第二个问题是元素的定位及z-index导致的问题，元素之间的位置没处理好导致重叠，从而在该手机上某元素一直点击不了，首先，
+        *       我还是从点击事件的绑定兼容方面考虑，但发现addEventListener是没问题的，其次我将着眼点放在了元素本身，看是否是元素类型
+        *       使用不当，换了a元素，发现依然不行，最后考虑到了元素的css样式，调试了一下，发现果然是样式问题导致元素产生重叠，从而一直
+        *       点击不到的目标元素。
+        *      在弄清这个层叠问题之前有必要先分别了解下定位和z-index，
+        *      定位：
+        *           position属性和float属性，会让元素脱离文档流或相对于在文档流中的位置发生偏移；
+        *      z-index：
+        *           控制元素的堆叠顺序，只能在position值为relative/absolute/fixed的元素上有效，并且它只决定同一父元素中同级子元素
+        *           的堆叠顺序，使用的时候也需要注意，负值的z-index会被透明的body元素覆盖，导致点击等事件无法响应，opacity有时候也
+        *           影响元素逇堆叠顺序；
+        *   3、第三个兼容问题是样式问题，这个确实是我这边的代码写的不够严谨，因此出现了兼容问题，不得不感叹现在的手机兼容能力的强大；
+        *   4、第四个问题是我设置一个元素position为fixed，但是页面下滑时，该元素依然会往下滑，刚开始也是从js代码入手调试，但是发现js并
+        *   没有问题，后来就用脚本控制，给onscroll添加了事件，让页面每次滚动，都设置该元素的top为0；
+        *
+        * */
+        
+        
+                
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
